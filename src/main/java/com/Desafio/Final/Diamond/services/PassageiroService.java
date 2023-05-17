@@ -36,7 +36,7 @@ public class PassageiroService {
 
         if (optPassagem.isPresent()) {
             PassageiroModel passageiro = optPassagem.get();
-            passageiro.setRecusada("recusada"); // Definindo o valor "recusada" para o campo recusada
+            passageiro.setRecusada("recusada a taxa foi cobrada."); // Definindo o valor "recusada" para o campo recusada
             passageiroRepository.save(passageiro);
         }
     }

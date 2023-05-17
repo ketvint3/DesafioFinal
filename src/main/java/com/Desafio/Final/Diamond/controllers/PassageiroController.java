@@ -86,7 +86,18 @@ public class PassageiroController {
             return ResponseEntity.notFound().build();
         }
     }
+    @PutMapping("/{id}/recusar-viagem")
+    public ResponseEntity<Void> recusarViagem(@PathVariable Integer id) {
+        PassageiroModel passageiro = passageiroService.buscarPassageiro(id);
 
+        if (passageiro != null) {
+            passageiro.setRecusada(String.valueOf(true));
+            passageiroService.atualizarPassageiro(id, passageiro);
+            return ResponseEntity.ok().build(); // Viagem recusada com sucesso
+        } else {
+            return ResponseEntity.notFound().build(); // Não foi possível encontrar o passageiro com o ID fornecido
+        }
+    }
     private PassageiroModel encontrarPassageiro(Integer id) {
 
        return passageiroService.buscarPassageiro(id);
