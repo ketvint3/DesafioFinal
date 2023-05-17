@@ -22,4 +22,8 @@ public class ViagemModel {
     @ManyToOne
     @JoinColumn(name = "passageiro_id")
     private PassageiroModel passageiroId;
+
+    @ManyToOne
+    @JoinColumn(name = "localizacao_id")
+    private LocalizacaoModel localizacaoId;
 }

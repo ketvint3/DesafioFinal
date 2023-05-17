@@ -21,6 +21,7 @@ public class MotoristaController {
     @ApiResponse(responseCode = "200", description = "Operação concluida com sucesso!")
     @ApiResponse(responseCode = "404", description = "Erro na operação!")
     @ApiResponse(responseCode = "500", description = "Erro inesperado!")
+
     public ResponseEntity listarMotoristas() {
         return new ResponseEntity(service.listarMotoristas(), HttpStatus.OK);
     }
@@ -30,13 +31,14 @@ public class MotoristaController {
     @ApiResponse(responseCode = "200", description = "Operação concluida com sucesso!")
     @ApiResponse(responseCode = "404", description = "Erro na operação!")
     @ApiResponse(responseCode = "500", description = "Erro inesperado!")
+
     public ResponseEntity cadastrarMotorista(@RequestBody MotoristaModel id) {
 
         try {
             service.add(id);
             return new ResponseEntity("Motorista cadastrado com sucesso!", HttpStatus.OK);
         } catch (Exception e) {
-            return new ResponseEntity("Não foi possivel cadastrar o motorista!Tente novamente.", HttpStatus.BAD_REQUEST);
+            return new ResponseEntity("Não foi possivel cadastrar o motorista! Tente novamente.", HttpStatus.BAD_REQUEST);
         }
     }
 
@@ -59,6 +61,7 @@ public class MotoristaController {
     @ApiResponse(responseCode = "200", description = "Operação concluida com sucesso!")
     @ApiResponse(responseCode = "404", description = "Erro na operação!")
     @ApiResponse(responseCode = "500", description = "Erro inesperado!")
+
     public ResponseEntity atualizarMotorista(Integer id, MotoristaModel motorista) {
         try {
             service.update(id, motorista);

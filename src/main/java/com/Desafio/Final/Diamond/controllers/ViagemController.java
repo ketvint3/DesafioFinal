@@ -1,8 +1,10 @@
 package com.Desafio.Final.Diamond.controllers;
 
+import com.Desafio.Final.Diamond.models.LocalizacaoModel;
 import com.Desafio.Final.Diamond.models.MotoristaModel;
 import com.Desafio.Final.Diamond.models.PassageiroModel;
 import com.Desafio.Final.Diamond.models.ViagemModel;
+import com.Desafio.Final.Diamond.services.LocalizacaoService;
 import com.Desafio.Final.Diamond.services.MotoristaService;
 import com.Desafio.Final.Diamond.services.PassageiroService;
 import com.Desafio.Final.Diamond.services.ViagemService;
@@ -25,21 +27,28 @@ public class ViagemController {
     private PassageiroService passageiroService;
     @Autowired
     private MotoristaService motoristaService;
+    @Autowired
+    private LocalizacaoService localizacaoService;
 
     @PostMapping(value = "/cadastrar")
-    @Operation(summary = "Cadastro das viagens", description = "Faz o cadastro das viagens")
+    @Operation(summary = "Pedir viagem", description = "Faz o pedido das viagens")
     @ApiResponse(responseCode = "200", description = "Sucesso!")
 
 
     public ResponseEntity cadastrarAgenda(@RequestBody ViagemModel viagem,
                                           @RequestParam Integer codigoPassageiro,
-                                          @RequestParam Integer codigoMotorista) {
+                                          @RequestParam Integer codigoMotorista,
+                                          @RequestParam Integer codigoLocalizacao) {
 
         PassageiroModel passageiro = passageiroService.buscarPassageiro(codigoPassageiro);
         viagem.setPassageiroId(passageiro);
 
         MotoristaModel motorista = motoristaService.pesquisarMotoristaPorId(codigoMotorista);
         viagem.setMotoristaId(motorista);
+
+        LocalizacaoModel localizacao = localizacaoService.acharPorCodigo(codigoLocalizacao);
+        viagem.setLocalizacaoId(localizacao);
+
 
         try {
             viagemService.cadastrar(viagem);
