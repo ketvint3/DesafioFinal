@@ -1,12 +1,10 @@
 package com.Desafio.Final.Diamond.models;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 import lombok.Data;
 
 @Data
+@Entity(name = "tb_passageiro")
 public class PassageiroModel {
 
     @Id

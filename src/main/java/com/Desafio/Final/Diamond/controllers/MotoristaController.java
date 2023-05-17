@@ -16,7 +16,7 @@ public class MotoristaController {
     @Autowired
     private MotoristaService service;
 
-    @GetMapping(value = "/motoristas")
+    @GetMapping(value = "/listar")
     @Operation(summary = "Listar Motoristas", description = "Método da api para listagem de todos os motoristas cadastrados no banco.")
     @ApiResponse(responseCode = "200", description = "Operação concluida com sucesso!")
     @ApiResponse(responseCode = "404", description = "Erro na operação!")
@@ -25,7 +25,7 @@ public class MotoristaController {
         return new ResponseEntity(service.listarMotoristas(), HttpStatus.OK);
     }
 
-    @PostMapping(value = "/motoristas/cadastrar")
+    @PostMapping(value = "/cadastrar")
     @Operation(summary = "Cadastrar motoristas", description = "Método da api para cadastro de motoristas na plataforma")
     @ApiResponse(responseCode = "200", description = "Operação concluida com sucesso!")
     @ApiResponse(responseCode = "404", description = "Erro na operação!")
@@ -40,7 +40,7 @@ public class MotoristaController {
         }
     }
 
-    @DeleteMapping(value = "/motoristas/deletar/{id}")
+    @DeleteMapping(value = "/deletar/{id}")
     @Operation(summary = "Deletar motorista", description = "Método da api para exclusão de um motorista da plataforma")
     @ApiResponse(responseCode = "200", description = "Operação concluida com sucesso!")
     @ApiResponse(responseCode = "404", description = "Erro na operação!")
@@ -54,7 +54,7 @@ public class MotoristaController {
         }
     }
 
-    @PutMapping(value = "/motoristas/{id}")
+    @PutMapping(value = "/{id}")
     @Operation(summary = "Atualizar motorista", description = "Método da api para alterar os dados de um motorista")
     @ApiResponse(responseCode = "200", description = "Operação concluida com sucesso!")
     @ApiResponse(responseCode = "404", description = "Erro na operação!")

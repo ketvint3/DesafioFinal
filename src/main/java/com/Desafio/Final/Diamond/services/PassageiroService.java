@@ -24,14 +24,15 @@ public class PassageiroService {
 
     public PassageiroModel buscarPassageiro(Integer id) {
         Optional<PassageiroModel> optPassagem = passageiroRepository.findById(id);
-        if (optPassagem.isEmpty()) {
 
+        if (optPassagem.isEmpty()) {
             return null;
         }
         return optPassagem.get();
     }
 
     public void adicionarPassageiro(PassageiroModel passageiro) {
+
         passageiroRepository.save(passageiro);
     }
 
