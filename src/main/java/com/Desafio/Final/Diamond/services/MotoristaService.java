@@ -1,6 +1,7 @@
 package com.Desafio.Final.Diamond.services;
 
 import com.Desafio.Final.Diamond.models.MotoristaModel;
+import com.Desafio.Final.Diamond.models.ViagemModel;
 import com.Desafio.Final.Diamond.repositories.MotoristaRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -20,6 +21,15 @@ public class MotoristaService {
 
     public List<MotoristaModel> listarMotoristas() {
         return repository.findAll();
+    }
+    public MotoristaModel listarCodigo(Integer codigo) {
+
+        Optional<MotoristaModel> optMotorista = repository.findById(codigo);
+        if (optMotorista.isEmpty()) {
+
+            return null;
+        }
+        return optMotorista.get();
     }
 
     public void update(Integer id, MotoristaModel motorista) {

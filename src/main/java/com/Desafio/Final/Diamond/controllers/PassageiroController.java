@@ -28,7 +28,7 @@ public class PassageiroController {
         return new ResponseEntity<>(passageiroService.listarPassageiros(), HttpStatus.OK);
     }
 
-    @GetMapping(value = "/{id}")
+    @GetMapping(value = "/listar/{id}")
     @Operation(summary = "Listar código do passageiro", description = "Método da api para listagem do passageiro, conforme seu código informado na plataforma")
     @ApiResponse(responseCode = "200", description = "Operação concluida com sucesso!")
     @ApiResponse(responseCode = "404", description = "Erro na operação!")

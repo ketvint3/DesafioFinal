@@ -33,7 +33,8 @@ public class ViagemController {
     @PostMapping(value = "/cadastrar")
     @Operation(summary = "Pedir viagem", description = "Faz o pedido das viagens")
     @ApiResponse(responseCode = "200", description = "Sucesso!")
-
+    @ApiResponse(responseCode = "404", description = "Erro na operação!")
+    @ApiResponse(responseCode = "500", description = "Erro inesperado!")
 
     public ResponseEntity cadastrarAgenda(@RequestBody ViagemModel viagem,
                                           @RequestParam Integer codigoPassageiro,
@@ -61,6 +62,8 @@ public class ViagemController {
     @GetMapping(value = "/listar")
     @Operation(summary = "Lista as viagens", description = "Faz a listagem de todas as viagens")
     @ApiResponse(responseCode = "200", description = "Sucesso!")
+    @ApiResponse(responseCode = "404", description = "Erro na operação!")
+    @ApiResponse(responseCode = "500", description = "Erro inesperado!")
 
     public ResponseEntity listarAgendas() {
 
@@ -74,6 +77,8 @@ public class ViagemController {
     @GetMapping(value = "/listar/{codigo}")
     @Operation(summary = "Lista viagens por código", description = "Faz a listagem da viagem referente ao código informado")
     @ApiResponse(responseCode = "200", description = "Sucesso!")
+    @ApiResponse(responseCode = "404", description = "Erro na operação!")
+    @ApiResponse(responseCode = "500", description = "Erro inesperado!")
 
     public ResponseEntity listarPorCodigo(@PathVariable Integer codigo) {
 
@@ -87,6 +92,8 @@ public class ViagemController {
     @PutMapping(value = "/alterar/{codigo}")
     @Operation(summary = "Altera as viagens", description = "Faz a alteração das viagens baseado no código informado, com alterações atualizadas no body")
     @ApiResponse(responseCode = "200", description = "Sucesso!")
+    @ApiResponse(responseCode = "404", description = "Erro na operação!")
+    @ApiResponse(responseCode = "500", description = "Erro inesperado!")
 
     public ResponseEntity alterar(@PathVariable Integer codigo, @RequestBody ViagemModel viagem) {
 
@@ -101,6 +108,8 @@ public class ViagemController {
     @DeleteMapping(value = "/deletar/{codigo}")
     @Operation(summary = "Deleta as viagens", description = "Faz a exclusão da viagem escolhida pelo código informado")
     @ApiResponse(responseCode = "200", description = "Sucesso!")
+    @ApiResponse(responseCode = "404", description = "Erro na operação!")
+    @ApiResponse(responseCode = "500", description = "Erro inesperado!")
 
     public ResponseEntity deletar(@PathVariable Integer codigo) {
 

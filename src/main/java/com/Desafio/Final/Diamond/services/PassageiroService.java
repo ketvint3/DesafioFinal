@@ -45,5 +45,6 @@ public class PassageiroService {
     public void removerPassageiro(Integer id) {
         if (passageiroRepository.existsById(id)) {
             passageiroRepository.deleteById(id);
-        }    }
+        }
+    }
 }

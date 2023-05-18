@@ -12,7 +12,7 @@ public class LocalizacaoModel {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer codigo;
-    private BigDecimal longitude;
-    private BigDecimal latitude;
+    private String longitude;
+    private String latitude;
 
 }
