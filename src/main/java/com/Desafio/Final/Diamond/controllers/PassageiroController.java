@@ -35,7 +35,7 @@ public class PassageiroController {
     @ApiResponse(responseCode = "500", description = "Erro inesperado!")
 
     public ResponseEntity<PassageiroModel> buscarPassageiro(@PathVariable Integer id) {
-        PassageiroModel passageiro = encontrarPassageiro(id);
+        PassageiroModel passageiro = passageiroService.buscarPassageiro(id);
         if (passageiro != null) {
             return ResponseEntity.ok(passageiro);
         } else {
@@ -61,7 +61,7 @@ public class PassageiroController {
     @ApiResponse(responseCode = "500", description = "Erro inesperado!")
 
     public ResponseEntity<String> atualizarPassageiro(@PathVariable Integer id, @RequestBody PassageiroModel novoPassageiro) {
-        PassageiroModel passageiro = encontrarPassageiro(id);
+        PassageiroModel passageiro = passageiroService.buscarPassageiro(id);
         if (passageiro != null) {
             passageiro.setNome(novoPassageiro.getNome());
             passageiro.setEndereco(novoPassageiro.getEndereco());
@@ -78,7 +78,7 @@ public class PassageiroController {
     @ApiResponse(responseCode = "500", description = "Erro inesperado!")
 
     public ResponseEntity<String> removerPassageiro(@PathVariable Integer id) {
-        PassageiroModel passageiro = encontrarPassageiro(id);
+        PassageiroModel passageiro = passageiroService.buscarPassageiro(id);
         if (passageiro != null) {
             passageiroService.removerPassageiro(id);
             return ResponseEntity.ok("Passageiro removido com sucesso!");
@@ -87,8 +87,21 @@ public class PassageiroController {
         }
     }
 
-    private PassageiroModel encontrarPassageiro(Integer id) {
+    @PutMapping("/recusar/{id}")
+    @Operation(summary = "Recusar uma viagem", description = "Método da api onde o passageiro recusa uma viagem da plataforma")
+    @ApiResponse(responseCode = "200", description = "Operação concluida com sucesso!")
+    @ApiResponse(responseCode = "404", description = "Erro na operação!")
+    @ApiResponse(responseCode = "500", description = "Erro inesperado!")
 
-       return passageiroService.buscarPassageiro(id);
+    public ResponseEntity<Void> recusarViagem(@PathVariable Integer id) {
+        PassageiroModel passageiro = passageiroService.buscarPassageiro(id);
+
+        if (passageiro != null) {
+            passageiro.setRecusada(String.valueOf(true));
+            passageiroService.atualizarPassageiro(id, passageiro);
+            return ResponseEntity.ok().build(); // Viagem recusada com sucesso
+        } else {
+            return ResponseEntity.notFound().build(); // Não foi possível encontrar o passageiro com o ID fornecido
+        }
     }
 }

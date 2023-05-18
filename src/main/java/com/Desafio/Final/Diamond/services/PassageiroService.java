@@ -22,7 +22,7 @@ public class PassageiroService {
         return passageiroRepository.findAll();
     }
 
-    public PassageiroModel buscarPassageiro(Integer id) {
+    public PassageiroModel buscarCodigo(Integer id) {
         Optional<PassageiroModel> optPassagem = passageiroRepository.findById(id);
 
         if (optPassagem.isEmpty()) {
@@ -47,4 +47,22 @@ public class PassageiroService {
             passageiroRepository.deleteById(id);
         }
     }
+    public PassageiroModel buscarPassageiro(Integer id) {
+        Optional<PassageiroModel> optPassagem = passageiroRepository.findById(id);
+
+        if (optPassagem.isEmpty() || "recusada".equals(optPassagem.get().getRecusada())) {
+            return null;
+        }
+        return optPassagem.get();
+    }
+    public void recusarViagem(Integer id) {
+        Optional<PassageiroModel> optPassagem = passageiroRepository.findById(id);
+
+        if (optPassagem.isPresent()) {
+            PassageiroModel passageiro = optPassagem.get();
+            passageiro.setRecusada("recusada a taxa foi cobrada."); // Definindo o valor "recusada" para o campo recusada
+            passageiroRepository.save(passageiro);
+        }
+    }
+
 }

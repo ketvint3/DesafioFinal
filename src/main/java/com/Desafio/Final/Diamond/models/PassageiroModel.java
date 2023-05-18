@@ -13,4 +13,6 @@ public class PassageiroModel {
     private Integer codigo;
     private String nome;
     private String endereco;
+    private String recusada;
+
 }
