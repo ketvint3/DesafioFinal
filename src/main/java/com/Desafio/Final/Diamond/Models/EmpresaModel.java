@@ -14,9 +14,7 @@ public class EmpresaModel {
     @ManyToOne
     @JoinColumn(name = "motorista_id")
     private Motorista motorista;
-    @ManyToOne
-    @JoinColumn(name = "suporte_id")
-    private Suporte suporte;
+
 
 
 
