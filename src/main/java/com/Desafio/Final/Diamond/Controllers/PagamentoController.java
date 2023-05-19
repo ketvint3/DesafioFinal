@@ -1,47 +1,39 @@
 package com.Desafio.Final.Diamond.Controllers;
 
+
 import com.Desafio.Final.Diamond.Models.PagamentoModel;
 import com.Desafio.Final.Diamond.Services.PagamentoService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
+import java.math.BigDecimal;
+
 @RestController
-@RequestMapping(value = "/Pagamento")
+@RequestMapping("/pagamentos")
 public class PagamentoController {
-    @Autowired
-    private PagamentoService pagamentoService;
-    @Autowired
-    private  LocalizacaoService localizacaoService;
 
-    public PagamentoController(PagamentoService pagamentoService, LocalizacaoService localizacaoService) {
-        this.pagamentoService = pagamentoService;
-        this.localizacaoService = localizacaoService;
-    }
+      @Autowired
+       private PagamentoService pagamentoService;
 
-    @PostMapping(value = "/criar")
-    public PagamentoModel criarPagamento(@RequestParam String taxa, @RequestParam String valor, @RequestBody LocalizacaoModel localizacao) {
-        return pagamentoService.criarPagamento(taxa, valor, localizacao);
-    }
+     @PostMapping
+     public PagamentoModel savePagamento(@RequestBody PagamentoModel pagamentoModel) {
+            return pagamentoService.savePagamento(pagamentoModel);
+     }
 
-    @GetMapping(value = "/listar")
-    public List<PagamentoModel> listarPagamentos() {
-        return pagamentoService.listarPagamentos();
-    }
+     @DeleteMapping("/{id}")
+     public void deletePagamentoModel(@PathVariable Integer id) {
+            pagamentoService.deletePagamentoModel(id);
+     }
 
-    @GetMapping(value = "/buscar/{id}")
-    public PagamentoModel buscarPagamentoPorId(@PathVariable Integer id) {
-        return pagamentoService.buscarPagamentoPorId(id);
-    }
+     @GetMapping("/{id}/calcular")
+     public ResponseEntity<BigDecimal> calcularPagamento(@PathVariable Integer id, @RequestParam Double kmRodado) {
+        BigDecimal valorFinal = pagamentoService.calcularPagamento(id, kmRodado);
 
-    @PutMapping(value = "/atualizar/{id}")
-    public void atualizarPagamento(@PathVariable Integer id, @RequestParam String novaTaxa, @RequestParam String novoValor) {
-        pagamentoService.atualizarPagamento(id, novaTaxa, novoValor);
+         if (valorFinal == null) {
+             return ResponseEntity.notFound().build();
+         }
+         return ResponseEntity.ok(valorFinal);
+        }
     }
-
-    @DeleteMapping(value = "/excluir/{id}")
-    public void excluirPagamento(@PathVariable Integer id) {
-        pagamentoService.excluirPagamento(id);
-    }
-}
 
