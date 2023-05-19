@@ -1,9 +1,6 @@
 package com.Desafio.Final.Diamond.controllers;
 
-import com.Desafio.Final.Diamond.models.LocalizacaoModel;
-import com.Desafio.Final.Diamond.models.MotoristaModel;
-import com.Desafio.Final.Diamond.models.PassageiroModel;
-import com.Desafio.Final.Diamond.models.ViagemModel;
+import com.Desafio.Final.Diamond.models.*;
 import com.Desafio.Final.Diamond.services.LocalizacaoService;
 import com.Desafio.Final.Diamond.services.MotoristaService;
 import com.Desafio.Final.Diamond.services.PassageiroService;
@@ -31,25 +28,22 @@ public class ViagemController {
     private LocalizacaoService localizacaoService;
 
     @PostMapping(value = "/cadastrar")
-    @Operation(summary = "Pedir viagem", description = "Faz o pedido das viagens")
+    @Operation(summary = "Solicitar viagem", description = "Faz a solicitação das viagens")
     @ApiResponse(responseCode = "200", description = "Sucesso!")
     @ApiResponse(responseCode = "404", description = "Erro na operação!")
     @ApiResponse(responseCode = "500", description = "Erro inesperado!")
 
     public ResponseEntity cadastrarAgenda(@RequestBody ViagemModel viagem,
                                           @RequestParam Integer codigoPassageiro,
-                                          @RequestParam Integer codigoMotorista,
                                           @RequestParam Integer codigoLocalizacao) {
 
-        PassageiroModel passageiro = passageiroService.buscarPassageiro(codigoPassageiro);
-        viagem.setPassageiroId(passageiro);
-
-        MotoristaModel motorista = motoristaService.pesquisarMotoristaPorId(codigoMotorista);
-        viagem.setMotoristaId(motorista);
+        PassageiroModel passageiro = passageiroService.buscarCodigo(codigoPassageiro);
+        viagem.setPassageiro(passageiro);
 
         LocalizacaoModel localizacao = localizacaoService.acharPorCodigo(codigoLocalizacao);
-        viagem.setLocalizacaoId(localizacao);
+        viagem.setLocalizacao(localizacao);
 
+        viagem.setStatusViagem(ViagemEnum.PENDENTE);
 
         try {
             viagemService.cadastrar(viagem);
@@ -60,7 +54,7 @@ public class ViagemController {
     }
 
     @GetMapping(value = "/listar")
-    @Operation(summary = "Lista as viagens", description = "Faz a listagem de todas as viagens")
+    @Operation(summary = "Listar as viagens", description = "Faz a listagem de todas as viagens")
     @ApiResponse(responseCode = "200", description = "Sucesso!")
     @ApiResponse(responseCode = "404", description = "Erro na operação!")
     @ApiResponse(responseCode = "500", description = "Erro inesperado!")
@@ -75,7 +69,7 @@ public class ViagemController {
     }
 
     @GetMapping(value = "/listar/{codigo}")
-    @Operation(summary = "Lista viagens por código", description = "Faz a listagem da viagem referente ao código informado")
+    @Operation(summary = "Listar viagens por código", description = "Faz a listagem da viagem referente ao código informado")
     @ApiResponse(responseCode = "200", description = "Sucesso!")
     @ApiResponse(responseCode = "404", description = "Erro na operação!")
     @ApiResponse(responseCode = "500", description = "Erro inesperado!")
@@ -90,7 +84,7 @@ public class ViagemController {
     }
 
     @PutMapping(value = "/alterar/{codigo}")
-    @Operation(summary = "Altera as viagens", description = "Faz a alteração das viagens baseado no código informado, com alterações atualizadas no body")
+    @Operation(summary = "Alterar as viagens", description = "Faz a alteração das viagens baseado no código informado, com alterações atualizadas no body")
     @ApiResponse(responseCode = "200", description = "Sucesso!")
     @ApiResponse(responseCode = "404", description = "Erro na operação!")
     @ApiResponse(responseCode = "500", description = "Erro inesperado!")
@@ -106,7 +100,7 @@ public class ViagemController {
     }
 
     @DeleteMapping(value = "/deletar/{codigo}")
-    @Operation(summary = "Deleta as viagens", description = "Faz a exclusão da viagem escolhida pelo código informado")
+    @Operation(summary = "Deletar as viagens", description = "Faz a exclusão da viagem escolhida pelo código informado")
     @ApiResponse(responseCode = "200", description = "Sucesso!")
     @ApiResponse(responseCode = "404", description = "Erro na operação!")
     @ApiResponse(responseCode = "500", description = "Erro inesperado!")
@@ -120,4 +114,50 @@ public class ViagemController {
         }
         return new ResponseEntity("Viagem do código " + codigo + " foi removida! ", HttpStatus.OK);
     }
+
+    // PASSAGEIRO
+    @PutMapping("/cancelar/{id}")
+    @Operation(summary = "Cancelar uma viagem", description = "Método da api onde a viagem é solicitada ou cancelada")
+    @ApiResponse(responseCode = "200", description = "Operação concluida com sucesso!")
+    @ApiResponse(responseCode = "404", description = "Erro na operação!")
+    @ApiResponse(responseCode = "500", description = "Erro inesperado!")
+
+    public ResponseEntity cancelarviagem(@PathVariable Integer id) {
+        ViagemModel viagem = viagemService.listarCodigo(id);
+
+        if (viagem != null) {
+            viagem.setStatusViagem(ViagemEnum.CANCELADA);
+            viagemService.update(id, viagem);
+            return new ResponseEntity("Sua viagem foi cancelada!", HttpStatus.OK);
+        } else {
+            return new ResponseEntity<>("Viagem inválida!", HttpStatus.BAD_REQUEST);
+
+        }
+    }
+    
+    // MOTORISTA
+    @PutMapping("/aceitar/{id}")
+    @Operation(summary = "Aceitar uma viagem", description = "Método da api onde a viagem é aceita ou cancelada")
+    @ApiResponse(responseCode = "200", description = "Operação concluida com sucesso!")
+    @ApiResponse(responseCode = "404", description = "Erro na operação!")
+    @ApiResponse(responseCode = "500", description = "Erro inesperado!")
+
+    public ResponseEntity aceitarViagem(@PathVariable Integer id,
+                                        @RequestParam Integer motoristaId) {
+
+        ViagemModel viagemModel = viagemService.listarCodigo(id);
+
+        if (viagemModel != null) {
+            viagemModel.setStatusViagem(ViagemEnum.EM_ANDAMENTO);
+
+            MotoristaModel motoristaModel = motoristaService.listarCodigo(motoristaId);
+            viagemModel.setMotorista(motoristaModel);
+
+            viagemService.update(id, viagemModel);
+            return new ResponseEntity<>("Viagem aceita com sucesso!", HttpStatus.OK);
+        } else {
+            return new ResponseEntity("Viagem inválida!", HttpStatus.BAD_REQUEST);
+        }
+    }
 }
+

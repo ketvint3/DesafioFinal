@@ -19,7 +19,7 @@ public class MotoristaController {
     private MotoristaService service;
 
     @GetMapping(value = "/listar")
-    @Operation(summary = "Listar Motoristas", description = "Método da api para listagem de todos os motoristas cadastrados no banco.")
+    @Operation(summary = "Lista motoristas", description = "Método da api para listagem de todos os motoristas cadastrados no banco.")
     @ApiResponse(responseCode = "200", description = "Operação concluida com sucesso!")
     @ApiResponse(responseCode = "404", description = "Erro na operação!")
     @ApiResponse(responseCode = "500", description = "Erro inesperado!")
@@ -29,7 +29,7 @@ public class MotoristaController {
     }
 
     @PostMapping(value = "/cadastrar")
-    @Operation(summary = "Cadastrar motoristas", description = "Método da api para cadastro de motoristas na plataforma")
+    @Operation(summary = "Cadastra motoristas", description = "Método da api para cadastro de motoristas na plataforma")
     @ApiResponse(responseCode = "200", description = "Operação concluida com sucesso!")
     @ApiResponse(responseCode = "404", description = "Erro na operação!")
     @ApiResponse(responseCode = "500", description = "Erro inesperado!")
@@ -59,7 +59,7 @@ public class MotoristaController {
     }
 
     @DeleteMapping(value = "/deletar/{id}")
-    @Operation(summary = "Deletar motorista", description = "Método da api para exclusão de um motorista da plataforma")
+    @Operation(summary = "Deleta motorista", description = "Método da api para exclusão de um motorista da plataforma")
     @ApiResponse(responseCode = "200", description = "Operação concluida com sucesso!")
     @ApiResponse(responseCode = "404", description = "Erro na operação!")
     @ApiResponse(responseCode = "500", description = "Erro inesperado!")
@@ -73,7 +73,7 @@ public class MotoristaController {
     }
 
     @PutMapping(value = "/alterar/{id}")
-    @Operation(summary = "Atualizar motorista", description = "Método da api para alterar os dados de um motorista")
+    @Operation(summary = "Atualiza motorista", description = "Método da api para alterar os dados de um motorista")
     @ApiResponse(responseCode = "200", description = "Operação concluida com sucesso!")
     @ApiResponse(responseCode = "404", description = "Erro na operação!")
     @ApiResponse(responseCode = "500", description = "Erro inesperado!")

@@ -15,15 +15,18 @@ public class ViagemModel {
     private String partida;
     @Column(length = 255)
     private String chegada;
+    @Column(name = "status_viagem")
+    private ViagemEnum statusViagem;
 
     @ManyToOne
     @JoinColumn(name = "motorista_id")
-    private MotoristaModel motoristaId;
+    private MotoristaModel motorista;
     @ManyToOne
     @JoinColumn(name = "passageiro_id")
-    private PassageiroModel passageiroId;
+    private PassageiroModel passageiro;
 
     @ManyToOne
     @JoinColumn(name = "localizacao_id")
-    private LocalizacaoModel localizacaoId;
+    private LocalizacaoModel localizacao;
+
 }

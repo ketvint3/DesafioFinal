@@ -30,7 +30,7 @@ public class LocalizacaoController {
     }
 
     @GetMapping(value = "/listar")
-    @Operation(summary = "Lista as localizações", description = "Faz a listagem de todas as localizações")
+    @Operation(summary = "Listar as localizações", description = "Faz a listagem de todas as localizações")
     @ApiResponse(responseCode = "200", description = "Sucesso!")
     @ApiResponse(responseCode = "404", description = "Erro na operação!")
     @ApiResponse(responseCode = "500", description = "Erro inesperado!")
@@ -40,7 +40,7 @@ public class LocalizacaoController {
     }
 
     @GetMapping(value = "/listar/{codigo}")
-    @Operation(summary = "Lista a localização por código", description = "Faz a listagem da localização referente ao código informado")
+    @Operation(summary = "Listar a localização por código", description = "Faz a listagem da localização referente ao código informado")
     @ApiResponse(responseCode = "200", description = "Sucesso!")
     @ApiResponse(responseCode = "404", description = "Erro na operação!")
     @ApiResponse(responseCode = "500", description = "Erro inesperado!")
@@ -55,7 +55,7 @@ public class LocalizacaoController {
     }
 
     @PutMapping(value = "/alterar/{codigo}")
-    @Operation(summary = "Altera as localizações", description = "Faz a alteração das localizações baseado no código informado, com alterações atualizadas no body")
+    @Operation(summary = "Alterar as localizações", description = "Faz a alteração das localizações baseado no código informado, com alterações atualizadas no body")
     @ApiResponse(responseCode = "200", description = "Sucesso!")
     @ApiResponse(responseCode = "404", description = "Erro na operação!")
     @ApiResponse(responseCode = "500", description = "Erro inesperado!")
@@ -66,7 +66,7 @@ public class LocalizacaoController {
         return new ResponseEntity(localizacao, HttpStatus.OK);
     }
     @DeleteMapping(value = "/deletar/{codigo}")
-    @Operation(summary = "Deleta as localizações", description = "Faz a exclusão da localização escolhida pelo código informado")
+    @Operation(summary = "Deletar as localizações", description = "Faz a exclusão da localização escolhida pelo código informado")
     @ApiResponse(responseCode = "200", description = "Sucesso!")
     @ApiResponse(responseCode = "404", description = "Erro na operação!")
     @ApiResponse(responseCode = "500", description = "Erro inesperado!")
