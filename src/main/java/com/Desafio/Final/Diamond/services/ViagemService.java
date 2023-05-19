@@ -29,7 +29,7 @@ public class ViagemService {
         }
     }
 
-    public ViagemModel listarCodigo(Integer codigo) {
+    public ViagemModel buscarCodigo(Integer codigo) {
 
         Optional<ViagemModel> optViagem = viagemRepository.findById(codigo);
         if (optViagem.isEmpty()) {

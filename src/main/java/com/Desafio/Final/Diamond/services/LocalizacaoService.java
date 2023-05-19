@@ -1,7 +1,6 @@
 package com.Desafio.Final.Diamond.services;
 
 import com.Desafio.Final.Diamond.models.LocalizacaoModel;
-import com.Desafio.Final.Diamond.models.ViagemModel;
 import com.Desafio.Final.Diamond.repositories.LocalizacaoRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -15,7 +14,7 @@ public class LocalizacaoService {
     @Autowired
     private LocalizacaoRepository localizacaoRepository;
 
-    public void adicionar(LocalizacaoModel localizacaoSalva) {
+    public void cadastrar(LocalizacaoModel localizacaoSalva) {
         localizacaoRepository.save(localizacaoSalva);
 
     }
@@ -24,7 +23,7 @@ public class LocalizacaoService {
 
 
     }
-    public LocalizacaoModel acharPorCodigo(Integer codigo) {
+    public LocalizacaoModel buscarCodigo(Integer codigo) {
         Optional<LocalizacaoModel> optionalLocalizacao = localizacaoRepository.findById(codigo);
         if (optionalLocalizacao.isEmpty()) {
 

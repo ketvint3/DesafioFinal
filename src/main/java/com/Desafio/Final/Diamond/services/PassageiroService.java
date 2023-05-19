@@ -22,8 +22,8 @@ public class PassageiroService {
         return passageiroRepository.findAll();
     }
 
-    public PassageiroModel buscarCodigo(Integer id) {
-        Optional<PassageiroModel> optPassagem = passageiroRepository.findById(id);
+    public PassageiroModel buscarCodigo(Integer codigo) {
+        Optional<PassageiroModel> optPassagem = passageiroRepository.findById(codigo);
 
         if (optPassagem.isEmpty()) {
             return null;
@@ -36,15 +36,15 @@ public class PassageiroService {
         passageiroRepository.save(passageiro);
     }
 
-    public void atualizarPassageiro(Integer id, PassageiroModel passageiroAtualizado) {
-        if (passageiroRepository.existsById(id)) {
+    public void atualizarPassageiro(Integer codigo, PassageiroModel passageiroAtualizado) {
+        if (passageiroRepository.existsById(codigo)) {
             passageiroRepository.save(passageiroAtualizado);
         }
     }
 
-    public void removerPassageiro(Integer id) {
-        if (passageiroRepository.existsById(id)) {
-            passageiroRepository.deleteById(id);
+    public void removerPassageiro(Integer codigo) {
+        if (passageiroRepository.existsById(codigo)) {
+            passageiroRepository.deleteById(codigo);
         }
     }
 }

@@ -15,14 +15,14 @@ public class MotoristaService {
     @Autowired
     private MotoristaRepository repository;
 
-    public void add(MotoristaModel novoMotorista) {
+    public void adicionar(MotoristaModel novoMotorista) {
         repository.save(novoMotorista);
     }
 
-    public List<MotoristaModel> listarMotoristas() {
+    public List<MotoristaModel> listar() {
         return repository.findAll();
     }
-    public MotoristaModel listarCodigo(Integer codigo) {
+    public MotoristaModel buscarCodigo(Integer codigo) {
 
         Optional<MotoristaModel> optMotorista = repository.findById(codigo);
         if (optMotorista.isEmpty()) {
@@ -32,24 +32,15 @@ public class MotoristaService {
         return optMotorista.get();
     }
 
-    public void update(Integer id, MotoristaModel motorista) {
-        if (repository.existsById(id)) {
+    public void update(Integer codigo, MotoristaModel motorista) {
+        if (repository.existsById(codigo)) {
             repository.save(motorista);
         }
     }
 
-    public void remove(Integer id) {
-        if (repository.existsById(id)) {
-            repository.deleteById(id);
+    public void remover(Integer codigo) {
+        if (repository.existsById(codigo)) {
+            repository.deleteById(codigo);
         }
-    }
-
-    public MotoristaModel pesquisarMotoristaPorId(Integer id) {
-
-        Optional<MotoristaModel> optionalMotoristaModel = repository.findById(id);
-        if (optionalMotoristaModel.isEmpty()) {
-            return null;
-        }
-        return optionalMotoristaModel.get();
     }
 }

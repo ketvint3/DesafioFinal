@@ -1,6 +1,7 @@
 package com.Desafio.Final.Diamond.controllers;
 
 import com.Desafio.Final.Diamond.models.*;
+import com.Desafio.Final.Diamond.models.enu.ViagemEnum;
 import com.Desafio.Final.Diamond.services.LocalizacaoService;
 import com.Desafio.Final.Diamond.services.MotoristaService;
 import com.Desafio.Final.Diamond.services.PassageiroService;
@@ -33,14 +34,14 @@ public class ViagemController {
     @ApiResponse(responseCode = "404", description = "Erro na operação!")
     @ApiResponse(responseCode = "500", description = "Erro inesperado!")
 
-    public ResponseEntity cadastrarAgenda(@RequestBody ViagemModel viagem,
+    public ResponseEntity cadastrar(@RequestBody ViagemModel viagem,
                                           @RequestParam Integer codigoPassageiro,
                                           @RequestParam Integer codigoLocalizacao) {
 
         PassageiroModel passageiro = passageiroService.buscarCodigo(codigoPassageiro);
         viagem.setPassageiro(passageiro);
 
-        LocalizacaoModel localizacao = localizacaoService.acharPorCodigo(codigoLocalizacao);
+        LocalizacaoModel localizacao = localizacaoService.buscarCodigo(codigoLocalizacao);
         viagem.setLocalizacao(localizacao);
 
         viagem.setStatusViagem(ViagemEnum.PENDENTE);
@@ -59,7 +60,7 @@ public class ViagemController {
     @ApiResponse(responseCode = "404", description = "Erro na operação!")
     @ApiResponse(responseCode = "500", description = "Erro inesperado!")
 
-    public ResponseEntity listarAgendas() {
+    public ResponseEntity listar() {
 
         try {
             return new ResponseEntity(viagemService.listar(), HttpStatus.OK);
@@ -77,9 +78,9 @@ public class ViagemController {
     public ResponseEntity listarPorCodigo(@PathVariable Integer codigo) {
 
         try {
-            return new ResponseEntity(viagemService.listarCodigo(codigo), HttpStatus.OK);
+            return new ResponseEntity(viagemService.buscarCodigo(codigo), HttpStatus.OK);
         } catch (NoSuchElementException e) {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+            return new ResponseEntity( "Código Inválido!", HttpStatus.NOT_FOUND);
         }
     }
 
@@ -123,7 +124,7 @@ public class ViagemController {
     @ApiResponse(responseCode = "500", description = "Erro inesperado!")
 
     public ResponseEntity cancelarviagem(@PathVariable Integer id) {
-        ViagemModel viagem = viagemService.listarCodigo(id);
+        ViagemModel viagem = viagemService.buscarCodigo(id);
 
         if (viagem != null) {
             viagem.setStatusViagem(ViagemEnum.CANCELADA);
@@ -145,12 +146,12 @@ public class ViagemController {
     public ResponseEntity aceitarViagem(@PathVariable Integer id,
                                         @RequestParam Integer motoristaId) {
 
-        ViagemModel viagemModel = viagemService.listarCodigo(id);
+        ViagemModel viagemModel = viagemService.buscarCodigo(id);
 
         if (viagemModel != null) {
             viagemModel.setStatusViagem(ViagemEnum.EM_ANDAMENTO);
 
-            MotoristaModel motoristaModel = motoristaService.listarCodigo(motoristaId);
+            MotoristaModel motoristaModel = motoristaService.buscarCodigo(motoristaId);
             viagemModel.setMotorista(motoristaModel);
 
             viagemService.update(id, viagemModel);

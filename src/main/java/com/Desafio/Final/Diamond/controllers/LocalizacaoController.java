@@ -16,7 +16,7 @@ import java.util.NoSuchElementException;
 public class LocalizacaoController {
 
     @Autowired
-    private LocalizacaoService service;
+    private LocalizacaoService localizacaoservice;
 
     @PostMapping(value = "/cadastrar")
     @Operation(summary = "Cadastrar localização", description = "Faz o cadastro da localização")
@@ -24,9 +24,14 @@ public class LocalizacaoController {
     @ApiResponse(responseCode = "404", description = "Erro na operação!")
     @ApiResponse(responseCode = "500", description = "Erro inesperado!")
 
-    public ResponseEntity localizacaoAdicionada(@RequestBody LocalizacaoModel localizacao) {
-        service.adicionar(localizacao);
-        return new ResponseEntity(localizacao, HttpStatus.CREATED);
+    public ResponseEntity cadastrar(@RequestBody LocalizacaoModel localizacao) {
+
+        try {
+            localizacaoservice.cadastrar(localizacao);
+        } catch (NoSuchElementException e) {
+            return new ResponseEntity("Não foi possível adicionar a localização.", HttpStatus.BAD_REQUEST);
+        }
+        return new ResponseEntity("Localização adicionada!", HttpStatus.CREATED);
     }
 
     @GetMapping(value = "/listar")
@@ -35,8 +40,13 @@ public class LocalizacaoController {
     @ApiResponse(responseCode = "404", description = "Erro na operação!")
     @ApiResponse(responseCode = "500", description = "Erro inesperado!")
 
-    public ResponseEntity listarPorCodigo() {
-        return new ResponseEntity(service.listar(), HttpStatus.OK);
+    public ResponseEntity listar() {
+
+        try {
+            return new ResponseEntity(localizacaoservice.listar(), HttpStatus.OK);
+        } catch (NoSuchElementException e) {
+            return new ResponseEntity("Erro! Tente novamente.", HttpStatus.BAD_REQUEST);
+        }
     }
 
     @GetMapping(value = "/listar/{codigo}")
@@ -48,9 +58,9 @@ public class LocalizacaoController {
     public ResponseEntity listarPorCodigo(@PathVariable Integer codigo) {
 
         try {
-            return new ResponseEntity(service.acharPorCodigo(codigo), HttpStatus.OK);
+            return new ResponseEntity(localizacaoservice.buscarCodigo(codigo), HttpStatus.OK);
         } catch (NoSuchElementException e) {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+            return new ResponseEntity( "Código Inválido!", HttpStatus.NOT_FOUND);
         }
     }
 
@@ -62,9 +72,15 @@ public class LocalizacaoController {
 
     public ResponseEntity alterar(@PathVariable Integer codigo ,
                                   @RequestBody LocalizacaoModel localizacao){
-        service.update(codigo, localizacao);
+
+        try {
+            localizacaoservice.update(codigo, localizacao);
+        } catch (NoSuchElementException e) {
+            return new ResponseEntity("Não foi possível alterar", HttpStatus.BAD_REQUEST);
+        }
         return new ResponseEntity(localizacao, HttpStatus.OK);
     }
+
     @DeleteMapping(value = "/deletar/{codigo}")
     @Operation(summary = "Deletar as localizações", description = "Faz a exclusão da localização escolhida pelo código informado")
     @ApiResponse(responseCode = "200", description = "Sucesso!")
@@ -72,7 +88,12 @@ public class LocalizacaoController {
     @ApiResponse(responseCode = "500", description = "Erro inesperado!")
 
     public ResponseEntity deletar(@PathVariable Integer codigo){
-        service.remover(codigo);
-        return new ResponseEntity(HttpStatus.OK);
+
+        try {
+            localizacaoservice.remover(codigo);
+        } catch (NoSuchElementException e) {
+            return new ResponseEntity("Código inválido!", HttpStatus.BAD_REQUEST);
+        }
+        return new ResponseEntity("Localização do código " + codigo + " foi removida! ", HttpStatus.OK);
     }
 }

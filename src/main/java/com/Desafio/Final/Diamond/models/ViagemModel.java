@@ -1,5 +1,6 @@
 package com.Desafio.Final.Diamond.models;
 
+import com.Desafio.Final.Diamond.models.enu.ViagemEnum;
 import jakarta.persistence.*;
 import lombok.Data;
 

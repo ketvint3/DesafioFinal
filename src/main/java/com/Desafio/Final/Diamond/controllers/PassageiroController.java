@@ -4,12 +4,13 @@ import com.Desafio.Final.Diamond.models.PassageiroModel;
 import com.Desafio.Final.Diamond.services.PassageiroService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
+import java.util.NoSuchElementException;
 
 @RestController
 @RequestMapping(value = "/passageiro")
@@ -18,13 +19,24 @@ public class PassageiroController {
     @Autowired
     private PassageiroService passageiroService;
 
+    @PostMapping(value = "/cadastrar")
+    @Operation(summary = "Cadastrar passageiros", description = "Método da api para cadastro de passageiro na plataforma")
+    @ApiResponse(responseCode = "200", description = "Operação concluida com sucesso!")
+    @ApiResponse(responseCode = "404", description = "Erro na operação!")
+    @ApiResponse(responseCode = "500", description = "Erro inesperado!")
+
+    public ResponseEntity cadastrar(@Valid @RequestBody PassageiroModel passageiro) {
+        passageiroService.adicionarPassageiro(passageiro);
+        return ResponseEntity.status(HttpStatus.CREATED).body("Passageiro adicionado com sucesso!");
+    }
+
     @GetMapping(value = "/listar")
     @Operation(summary = "Listar passageiros", description = "Método da api para listagem de todos os passageiros cadastrados no banco.")
     @ApiResponse(responseCode = "200", description = "Operação concluida com sucesso!")
     @ApiResponse(responseCode = "404", description = "Erro na operação!")
     @ApiResponse(responseCode = "500", description = "Erro inesperado!")
 
-    public ResponseEntity<List<PassageiroModel>> listarPassageiros() {
+    public ResponseEntity listar() {
         return new ResponseEntity<>(passageiroService.listarPassageiros(), HttpStatus.OK);
     }
 
@@ -34,7 +46,7 @@ public class PassageiroController {
     @ApiResponse(responseCode = "404", description = "Erro na operação!")
     @ApiResponse(responseCode = "500", description = "Erro inesperado!")
 
-    public ResponseEntity<PassageiroModel> buscarPassageiro(@PathVariable Integer id) {
+    public ResponseEntity listarCodigo(@PathVariable Integer id) {
         PassageiroModel passageiro = passageiroService.buscarCodigo(id);
         if (passageiro != null) {
             return ResponseEntity.ok(passageiro);
@@ -42,33 +54,20 @@ public class PassageiroController {
             return ResponseEntity.notFound().build();
         }
     }
-
-    @PostMapping(value = "/cadastrar")
-    @Operation(summary = "Cadastrar passageiros", description = "Método da api para cadastro de passageiro na plataforma")
-    @ApiResponse(responseCode = "200", description = "Operação concluida com sucesso!")
-    @ApiResponse(responseCode = "404", description = "Erro na operação!")
-    @ApiResponse(responseCode = "500", description = "Erro inesperado!")
-
-    public ResponseEntity<String> adicionarPassageiro(@RequestBody PassageiroModel passageiro) {
-        passageiroService.adicionarPassageiro(passageiro);
-        return ResponseEntity.status(HttpStatus.CREATED).body("Passageiro adicionado com sucesso!");
-    }
-
     @PutMapping(value = "/alterar/{id}")
     @Operation(summary = "Atualizar passageiro", description = "Método da api para alterar os dados de um passageiro")
     @ApiResponse(responseCode = "200", description = "Operação concluida com sucesso!")
     @ApiResponse(responseCode = "404", description = "Erro na operação!")
     @ApiResponse(responseCode = "500", description = "Erro inesperado!")
 
-    public ResponseEntity<String> atualizarPassageiro(@PathVariable Integer id, @RequestBody PassageiroModel novoPassageiro) {
-        PassageiroModel passageiro = passageiroService.buscarCodigo(id);
-        if (passageiro != null) {
-            passageiro.setNome(novoPassageiro.getNome());
-            passageiro.setEndereco(novoPassageiro.getEndereco());
-            return ResponseEntity.ok("Passageiro atualizado com sucesso!");
-        } else {
-            return ResponseEntity.notFound().build();
+    public ResponseEntity atualizar(@PathVariable Integer codigo, @RequestBody PassageiroModel passageiro) {
+
+        try {
+            passageiroService.atualizarPassageiro(codigo, passageiro);
+        } catch (NoSuchElementException e) {
+            return new ResponseEntity("Não foi possível alterar", HttpStatus.BAD_REQUEST);
         }
+        return new ResponseEntity(passageiro, HttpStatus.OK);
     }
 
     @DeleteMapping(value = "/deletar/{id}")
@@ -77,7 +76,7 @@ public class PassageiroController {
     @ApiResponse(responseCode = "404", description = "Erro na operação!")
     @ApiResponse(responseCode = "500", description = "Erro inesperado!")
 
-    public ResponseEntity<String> removerPassageiro(@PathVariable Integer id) {
+    public ResponseEntity deletar(@PathVariable Integer id) {
         PassageiroModel passageiro = passageiroService.buscarCodigo(id);
         if (passageiro != null) {
             passageiroService.removerPassageiro(id);
