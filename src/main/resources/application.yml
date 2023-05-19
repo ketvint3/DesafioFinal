@@ -1,19 +1,14 @@
 spring:
   profiles:
-    active: local
+    active: native
   mvc:
     pathmatch:
-      matching-strategy: ant_path_matcher
+      matching-stratedy: ant-path-matcher
   datasource:
     url: jdbc:postgresql://localhost:5432/postgres
-    username: vasco
-    password: 123
-jpa:
-  hibernate:
-    ddl-auto: create-drop
-  show-sql: true
-  properties:
+    username: postgres
+    password: Ma12rilu10
+  jpa:
     hibernate:
-      format_sql: true
-  database: postgresql
-  database-platform: org.hibernate.dialect.PostgreSQLDialect
+      ddl-auto: create-drop
+    show-sql: true
