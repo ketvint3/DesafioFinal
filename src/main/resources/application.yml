@@ -6,8 +6,8 @@ spring:
       matching-stratedy: ant-path-matcher
   datasource:
     url: jdbc:postgresql://localhost:5432/postgres
-    username: postgres
-    password: Ma12rilu10
+    username: vasco
+    password: 123
   jpa:
     hibernate:
       ddl-auto: create-drop

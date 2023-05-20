@@ -19,4 +19,14 @@ public class MotoristaModel {
     @Email
     private String email;
     private String veiculo;
+
+    @Column(nullable = true, length = 64)
+    private String photos;
+
+    @Transient
+    public String getPhotosImagePath(){
+        if (photos == null || codigo == null) return null;
+
+        return "/motorista-photos/"+ codigo + "/" + photos;
+    }
 }
