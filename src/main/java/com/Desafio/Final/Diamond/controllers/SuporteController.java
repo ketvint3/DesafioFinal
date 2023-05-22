@@ -10,9 +10,15 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Scanner;
+
 @RestController
 @RequestMapping(value = "/suporte")
 public class SuporteController {
+
+        Scanner input = new Scanner(System.in);
+        String[] email = new String[40];
+
 
 
     @Autowired
@@ -27,6 +33,7 @@ public class SuporteController {
         public ResponseEntity suporteAdicionado (@RequestBody SuporteModel suporte){
             service.adicionar(suporte);
             return new ResponseEntity(suporte, HttpStatus.CREATED);
+
         }
         @PutMapping(value = "/alterar/{codigo}")
         public ResponseEntity alterar(@PathVariable Integer codigo ,
