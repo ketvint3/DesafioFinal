@@ -16,6 +16,8 @@ public class ViagemModel {
     private String partida;
     @Column(length = 255)
     private String chegada;
+
+    @Enumerated(EnumType.STRING)
     @Column(name = "status_viagem")
     private ViagemEnum statusViagem;
 

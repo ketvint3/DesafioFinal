@@ -2,6 +2,7 @@ package com.Desafio.Final.Diamond.controllers;
 
 import com.Desafio.Final.Diamond.models.*;
 import com.Desafio.Final.Diamond.models.enu.ViagemEnum;
+
 import com.Desafio.Final.Diamond.services.LocalizacaoService;
 import com.Desafio.Final.Diamond.services.MotoristaService;
 import com.Desafio.Final.Diamond.services.PassageiroService;
@@ -49,9 +50,9 @@ public class ViagemController {
         try {
             viagemService.cadastrar(viagem);
         } catch (NoSuchElementException e) {
-            return new ResponseEntity("Não foi possível cadastrar a viagem.", HttpStatus.BAD_REQUEST);
+            return new ResponseEntity("Não foi possível solicitar a viagem.", HttpStatus.BAD_REQUEST);
         }
-        return new ResponseEntity("Viagem cadastrada!", HttpStatus.CREATED);
+        return new ResponseEntity("Viagem solicitada!", HttpStatus.CREATED);
     }
 
     @GetMapping(value = "/listar")
@@ -117,18 +118,18 @@ public class ViagemController {
     }
 
     // PASSAGEIRO
-    @PutMapping("/cancelar/{id}")
+    @PutMapping("/cancelar/{codigo}")
     @Operation(summary = "Cancelar uma viagem", description = "Método da api onde a viagem é solicitada ou cancelada")
     @ApiResponse(responseCode = "200", description = "Operação concluida com sucesso!")
     @ApiResponse(responseCode = "404", description = "Erro na operação!")
     @ApiResponse(responseCode = "500", description = "Erro inesperado!")
 
-    public ResponseEntity cancelarviagem(@PathVariable Integer id) {
-        ViagemModel viagem = viagemService.buscarCodigo(id);
+    public ResponseEntity cancelarviagem(@PathVariable Integer codigo) {
+        ViagemModel viagem = viagemService.buscarCodigo(codigo);
 
         if (viagem != null) {
             viagem.setStatusViagem(ViagemEnum.CANCELADA);
-            viagemService.update(id, viagem);
+            viagemService.update(codigo, viagem);
             return new ResponseEntity("Sua viagem foi cancelada!", HttpStatus.OK);
         } else {
             return new ResponseEntity<>("Viagem inválida!", HttpStatus.BAD_REQUEST);
@@ -137,16 +138,16 @@ public class ViagemController {
     }
     
     // MOTORISTA
-    @PutMapping("/aceitar/{id}")
+    @PutMapping("/aceitar/{codigo}")
     @Operation(summary = "Aceitar uma viagem", description = "Método da api onde a viagem é aceita ou cancelada")
     @ApiResponse(responseCode = "200", description = "Operação concluida com sucesso!")
     @ApiResponse(responseCode = "404", description = "Erro na operação!")
     @ApiResponse(responseCode = "500", description = "Erro inesperado!")
 
-    public ResponseEntity aceitarViagem(@PathVariable Integer id,
+    public ResponseEntity aceitarViagem(@PathVariable Integer codigo,
                                         @RequestParam Integer motoristaId) {
 
-        ViagemModel viagemModel = viagemService.buscarCodigo(id);
+        ViagemModel viagemModel = viagemService.buscarCodigo(codigo);
 
         if (viagemModel != null) {
             viagemModel.setStatusViagem(ViagemEnum.EM_ANDAMENTO);
@@ -154,11 +155,39 @@ public class ViagemController {
             MotoristaModel motoristaModel = motoristaService.buscarCodigo(motoristaId);
             viagemModel.setMotorista(motoristaModel);
 
-            viagemService.update(id, viagemModel);
+            viagemService.update(codigo, viagemModel);
             return new ResponseEntity<>("Viagem aceita com sucesso!", HttpStatus.OK);
         } else {
             return new ResponseEntity("Viagem inválida!", HttpStatus.BAD_REQUEST);
         }
+    }
+    @PutMapping("/finalizar/{codigo}")
+    @Operation(summary = "Finalizar uma viagem", description = "Método da api onde a viagem é finalizada")
+    @ApiResponse(responseCode = "200", description = "Operação concluida com sucesso!")
+    @ApiResponse(responseCode = "404", description = "Erro na operação!")
+    @ApiResponse(responseCode = "500", description = "Erro inesperado!")
+
+    public ResponseEntity finalizarViagem(@PathVariable Integer codigo) {
+        ViagemModel viagemModel = viagemService.buscarCodigo(codigo);
+
+        if (viagemModel != null) {
+            viagemModel.setStatusViagem(ViagemEnum.FINALIZADO);
+            viagemService.update(codigo, viagemModel);
+            return new ResponseEntity("Sua viagem foi finalizada!", HttpStatus.OK);
+        } else {
+            return new ResponseEntity<>("Viagem inválida!", HttpStatus.BAD_REQUEST);
+        }
+    }
+
+    @GetMapping(value = "/pendente")
+    @Operation(summary = "Listar viagens pendentes", description = "Método da api onde é feita a listagem das viagens pendentes")
+    @ApiResponse(responseCode = "200", description = "Operação concluida com sucesso!")
+    @ApiResponse(responseCode = "404", description = "Erro na operação!")
+    @ApiResponse(responseCode = "500", description = "Erro inesperado!")
+
+    public ResponseEntity listarViagensPendentes() {
+
+        return new ResponseEntity(viagemService.listarPendentes(), HttpStatus.OK);
     }
 }
 

@@ -2,6 +2,7 @@ package com.Desafio.Final.Diamond.services;
 
 import com.Desafio.Final.Diamond.models.ViagemModel;
 import com.Desafio.Final.Diamond.repositories.ViagemRepository;
+import com.Desafio.Final.Diamond.repositories.criteria.ViagemRepositoryCustom;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -12,6 +13,8 @@ import java.util.Optional;
 public class ViagemService {
     @Autowired
     private ViagemRepository viagemRepository;
+    @Autowired
+    private ViagemRepositoryCustom viagemRepositoryCustom;
 
     public void cadastrar(ViagemModel viagem) {
 
@@ -41,8 +44,13 @@ public class ViagemService {
 
     public void remover(Integer codigo) {
 
-        if (viagemRepository.existsById(codigo)){
+        if (viagemRepository.existsById(codigo)) {
             viagemRepository.deleteById(codigo);
         }
+    }
+
+    public List<ViagemModel> listarPendentes () {
+
+        return viagemRepositoryCustom.listarPendentes();
     }
 }
