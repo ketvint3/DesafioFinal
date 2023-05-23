@@ -3,10 +3,8 @@ package com.Desafio.Final.Diamond.controllers;
 import com.Desafio.Final.Diamond.models.*;
 import com.Desafio.Final.Diamond.models.enu.ViagemEnum;
 
-import com.Desafio.Final.Diamond.services.LocalizacaoService;
-import com.Desafio.Final.Diamond.services.MotoristaService;
-import com.Desafio.Final.Diamond.services.PassageiroService;
-import com.Desafio.Final.Diamond.services.ViagemService;
+import com.Desafio.Final.Diamond.repositories.facade.impl.MetodosFacadeImpl;
+import com.Desafio.Final.Diamond.services.*;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,6 +12,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.math.BigDecimal;
 import java.util.NoSuchElementException;
 
 @RestController
@@ -25,9 +24,7 @@ public class ViagemController {
     @Autowired
     private PassageiroService passageiroService;
     @Autowired
-    private MotoristaService motoristaService;
-    @Autowired
-    private LocalizacaoService localizacaoService;
+    private MetodosFacadeImpl metodosFacadeimpl;
 
     @PostMapping(value = "/cadastrar")
     @Operation(summary = "Solicitar viagem", description = "Faz a solicitação das viagens")
@@ -36,14 +33,10 @@ public class ViagemController {
     @ApiResponse(responseCode = "500", description = "Erro inesperado!")
 
     public ResponseEntity cadastrar(@RequestBody ViagemModel viagem,
-                                          @RequestParam Integer codigoPassageiro,
-                                          @RequestParam Integer codigoLocalizacao) {
+                                    @RequestParam Integer codigoPassageiro) {
 
         PassageiroModel passageiro = passageiroService.buscarCodigo(codigoPassageiro);
         viagem.setPassageiro(passageiro);
-
-        LocalizacaoModel localizacao = localizacaoService.buscarCodigo(codigoLocalizacao);
-        viagem.setLocalizacao(localizacao);
 
         viagem.setStatusViagem(ViagemEnum.PENDENTE);
 
@@ -136,7 +129,7 @@ public class ViagemController {
 
         }
     }
-    
+
     // MOTORISTA
     @PutMapping("/aceitar/{codigo}")
     @Operation(summary = "Aceitar uma viagem", description = "Método da api onde a viagem é aceita ou cancelada")
@@ -152,7 +145,7 @@ public class ViagemController {
         if (viagemModel != null) {
             viagemModel.setStatusViagem(ViagemEnum.EM_ANDAMENTO);
 
-            MotoristaModel motoristaModel = motoristaService.buscarCodigo(motoristaId);
+            MotoristaModel motoristaModel = metodosFacadeimpl.buscarCodigoDeMotorista(motoristaId);
             viagemModel.setMotorista(motoristaModel);
 
             viagemService.update(codigo, viagemModel);
@@ -167,13 +160,27 @@ public class ViagemController {
     @ApiResponse(responseCode = "404", description = "Erro na operação!")
     @ApiResponse(responseCode = "500", description = "Erro inesperado!")
 
-    public ResponseEntity finalizarViagem(@PathVariable Integer codigo) {
+    public ResponseEntity finalizarViagem(@PathVariable Integer codigo,
+                                          @RequestBody PagamentoModel pagamento,
+                                          @RequestParam Integer codigoPagamento) {
+
+        pagamento.setValor(metodosFacadeimpl.buscarCodigoDeValor(codigoPagamento));
+
+        Double valorFinal = viagemService.calcularPagamento(codigo);
+        pagamento.setValorFinal(BigDecimal.valueOf(valorFinal));
+
+        metodosFacadeimpl.salvarPagamento(pagamento);
+
         ViagemModel viagemModel = viagemService.buscarCodigo(codigo);
 
         if (viagemModel != null) {
             viagemModel.setStatusViagem(ViagemEnum.FINALIZADO);
             viagemService.update(codigo, viagemModel);
+
+            if (valorFinal != null) {
             return new ResponseEntity("Sua viagem foi finalizada!", HttpStatus.OK);
+            }
+            return ResponseEntity.notFound().build();
         } else {
             return new ResponseEntity<>("Viagem inválida!", HttpStatus.BAD_REQUEST);
         }
@@ -190,4 +197,5 @@ public class ViagemController {
         return new ResponseEntity(viagemService.listarPendentes(), HttpStatus.OK);
     }
 }
+
 

@@ -3,6 +3,8 @@ package com.Desafio.Final.Diamond.services;
 import com.Desafio.Final.Diamond.models.PassageiroModel;
 import com.Desafio.Final.Diamond.repositories.PassageiroRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.mail.SimpleMailMessage;
+import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -13,6 +15,9 @@ public class PassageiroService {
 
     @Autowired
     private PassageiroRepository passageiroRepository;
+
+    @Autowired
+    private JavaMailSender emailSender;
 
     public PassageiroService(PassageiroRepository passageiroRepository) {
         this.passageiroRepository = passageiroRepository;
@@ -46,5 +51,28 @@ public class PassageiroService {
         if (passageiroRepository.existsById(codigo)) {
             passageiroRepository.deleteById(codigo);
         }
+    }
+    public PassageiroModel buscarPorEmail(String email) {
+
+        return passageiroRepository.findByEmail(email);
+    }
+    public void enviarEmailSenha(String email, String senha) {
+        SimpleMailMessage message = new SimpleMailMessage();
+        message.setTo(email);
+        message.setSubject("Senha de acesso");
+        message.setText("Sua senha de acesso é: " + senha);
+        emailSender.send(message);
+    }
+
+    public String gerarNovaSenha() {
+        int length = 8;
+        String characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+        StringBuilder newPassword = new StringBuilder();
+        for (int i = 0; i < length; i++) {
+            int randomIndex = (int) (Math.random() * characters.length());
+            newPassword.append(characters.charAt(randomIndex));
+        }
+
+        return newPassword.toString();
     }
 }

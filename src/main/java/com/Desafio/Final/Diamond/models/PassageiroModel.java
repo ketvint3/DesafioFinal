@@ -18,4 +18,16 @@ public class PassageiroModel {
     private String email;
     @CPF
     private String CPF;
+    private String senha;
+
+    @Column(nullable = true, length = 64)
+    private String photos;
+
+
+    @Transient
+    public String getPhotosImagePath(){
+        if (photos == null || codigo == null) return null;
+
+        return "/Passageiro-photos/"+ codigo + "/" + photos;
+    }
 }

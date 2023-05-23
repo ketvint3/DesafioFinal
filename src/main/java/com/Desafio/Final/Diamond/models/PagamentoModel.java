@@ -14,19 +14,17 @@ public class PagamentoModel {
     @Column(name = "id")
     private Integer codigo;
 
-    @Column(name = "taxa_por_km")
-    private Double taxaPorKm;
-
-    @Column(name = "pagamento_base")
-    private BigDecimal pagamentoBase;
-
     @Column(name = "km_rodado")
     private Double kmRodado;
 
     @Column(name = "valor_final")
     private  BigDecimal valorFinal;
 
+    @ManyToOne
+    @JoinColumn(name = "valor_id")
+    private ValorModel valor;
+
 
     // O pagamento vai ser de acordo com o km
-    // pagamento = pagamento base  da viagem+ Km a ser rodado * taxa do Km rodado
+    // pagamento = pagamento base  da viagem + Km a ser rodado * taxa do Km rodado
 }

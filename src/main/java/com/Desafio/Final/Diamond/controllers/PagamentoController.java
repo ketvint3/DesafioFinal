@@ -2,6 +2,7 @@ package com.Desafio.Final.Diamond.controllers;
 
 import com.Desafio.Final.Diamond.models.PagamentoModel;
 import com.Desafio.Final.Diamond.services.PagamentoService;
+import com.Desafio.Final.Diamond.services.ValorService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,7 +10,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.math.BigDecimal;
 import java.util.NoSuchElementException;
 
 @RestController
@@ -19,14 +19,22 @@ public class PagamentoController {
     @Autowired
     private PagamentoService pagamentoService;
 
+    @Autowired
+    private ValorService valorService;
+
     @PostMapping
     @Operation(summary = "Adiciona o valor do pagamento", description = "Adiciona os valores do pagamento, como: taxa por km, pagamento base e quantos km foram rodados")
     @ApiResponse(responseCode = "200", description = "Sucesso!")
     @ApiResponse(responseCode = "404", description = "Erro na operação!")
     @ApiResponse(responseCode = "500", description = "Erro inesperado!")
 
-    public PagamentoModel savePagamento(@RequestBody PagamentoModel pagamentoModel) {
-        return pagamentoService.savePagamento(pagamentoModel);
+    public ResponseEntity savePagamento(@RequestBody PagamentoModel pagamentoModel,
+                                        @RequestParam Integer valorId) {
+
+        pagamentoModel.setValor(valorService.buscarCodigo(valorId));
+        pagamentoService.savePagamento(pagamentoModel);
+
+        return new ResponseEntity("Seu pagamento foi adicionado! ", HttpStatus.CREATED);
     }
 
     @GetMapping(value = "/listar")
@@ -51,23 +59,7 @@ public class PagamentoController {
     @ApiResponse(responseCode = "500", description = "Erro inesperado!")
 
     public void deletePagamentoModel(@PathVariable Integer codigo) {
+
         pagamentoService.deletePagamentoModel(codigo);
-    }
-
-    @GetMapping("/{codigo}/calcular")
-    @Operation(summary = "Calcula o total do pagamento", description = "Faz a soma do pagamento")
-    @ApiResponse(responseCode = "200", description = "Sucesso!")
-    @ApiResponse(responseCode = "404", description = "Erro na operação!")
-    @ApiResponse(responseCode = "500", description = "Erro inesperado!")
-
-    public ResponseEntity<BigDecimal> calcularPagamento(@PathVariable Integer codigo,
-                                                        @RequestParam Double kmRodado) {
-
-        BigDecimal valorFinal = pagamentoService.calcularPagamento(codigo, kmRodado);
-
-        if (valorFinal == null) {
-            return ResponseEntity.notFound().build();
-        }
-        return ResponseEntity.ok(valorFinal);
     }
 }

@@ -1,6 +1,8 @@
 package com.Desafio.Final.Diamond.controllers;
 
 import com.Desafio.Final.Diamond.models.PassageiroModel;
+import com.Desafio.Final.Diamond.repositories.PassageiroRepository;
+import com.Desafio.Final.Diamond.repositories.util.FileUploadUtil;
 import com.Desafio.Final.Diamond.services.PassageiroService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -8,8 +10,11 @@ import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.NoSuchElementException;
 
 @RestController
@@ -18,6 +23,9 @@ public class PassageiroController {
 
     @Autowired
     private PassageiroService passageiroService;
+
+    @Autowired
+    private PassageiroRepository passageiroRepository;
 
     @PostMapping(value = "/cadastrar")
     @Operation(summary = "Cadastrar passageiros", description = "Método da api para cadastro de passageiro na plataforma")
@@ -28,6 +36,30 @@ public class PassageiroController {
     public ResponseEntity cadastrar(@Valid @RequestBody PassageiroModel passageiro) {
         passageiroService.adicionarPassageiro(passageiro);
         return ResponseEntity.status(HttpStatus.CREATED).body("Passageiro adicionado com sucesso!");
+    }
+
+    @PostMapping("/foto/{codigo}")
+    @Operation(summary = "Salvar como imagem de perfil ", description = "Cadastar imagem de perfil")
+    @ApiResponse(responseCode = "200", description = "Operação concluida com sucesso!")
+    @ApiResponse(responseCode = "404", description = "Erro na operação!")
+    @ApiResponse(responseCode = "500", description = "Erro inesperado!")
+    public ResponseEntity salvarImagemPassageiro(PassageiroModel Passageiro,
+                                                 @RequestParam("Image")
+                                                 MultipartFile multipartfile) throws IOException {
+        try {
+
+            String fileName = StringUtils.cleanPath(multipartfile.getOriginalFilename());
+            Passageiro.setPhotos(fileName);
+
+            PassageiroModel fotoPassageiro = passageiroRepository.save(Passageiro);
+
+            String uploadDir = "Passageiro-photos/" + fotoPassageiro.getCodigo();
+
+            FileUploadUtil.saveFile(uploadDir, fileName, multipartfile);
+            return new ResponseEntity("Imagem salva com sucesso!", HttpStatus.OK);
+        } catch (IOException e){
+            return new ResponseEntity("Não foi possivel salvar a imagem! Tente novamente.", HttpStatus.BAD_REQUEST);
+        }
     }
 
     @GetMapping(value = "/listar")
@@ -84,5 +116,22 @@ public class PassageiroController {
         } else {
             return ResponseEntity.notFound().build();
         }
+    }
+    public String forgotPassword(@RequestBody String email) {
+
+        PassageiroModel passageiro = passageiroService.buscarPorEmail(email);
+
+        if (passageiro == null) {
+            return "Usuário não encontrado";
+        }
+
+        String novaSenha = passageiroService.gerarNovaSenha();
+
+        passageiro.setSenha(novaSenha);
+        passageiroService.atualizarPassageiro(passageiro.getCodigo(), passageiro);
+
+        passageiroService.enviarEmailSenha(passageiro.getEmail(), novaSenha);
+
+        return "E-mail com a nova senha enviado";
     }
 }
