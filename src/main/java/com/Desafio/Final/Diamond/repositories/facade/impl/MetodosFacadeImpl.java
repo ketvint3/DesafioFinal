@@ -8,7 +8,6 @@ import com.Desafio.Final.Diamond.services.MotoristaService;
 import com.Desafio.Final.Diamond.services.PagamentoService;
 import com.Desafio.Final.Diamond.services.ValorService;
 import org.springframework.beans.factory.annotation.Autowired;
-
 public class MetodosFacadeImpl implements MetodosFacade {
     @Autowired
     private MotoristaService motoristaService;
