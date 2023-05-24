@@ -22,21 +22,21 @@ public class MotoristaService {
         return repository.findAll();
     }
 
-    public void update(Integer id, MotoristaModel motorista) {
-        if (repository.existsById(id)) {
+    public void update(Integer codigo, MotoristaModel motorista) {
+        if (repository.existsById(codigo)) {
             repository.save(motorista);
         }
     }
 
-    public void remove(Integer id) {
-        if (repository.existsById(id)) {
-            repository.deleteById(id);
+    public void remove(Integer codigo) {
+        if (repository.existsById(codigo)) {
+            repository.deleteById(codigo);
         }
     }
 
-    public MotoristaModel pesquisarMotoristaPorId(Integer id) {
+    public MotoristaModel pesquisarMotoristaPorId(Integer codigo) {
 
-        Optional<MotoristaModel> optionalMotoristaModel = repository.findById(id);
+        Optional<MotoristaModel> optionalMotoristaModel = repository.findById(codigo);
         if (optionalMotoristaModel.isEmpty()) {
             return null;
         }

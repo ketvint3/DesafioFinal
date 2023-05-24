@@ -39,4 +39,21 @@ public class EmpresaService {
         empresaRepository.delete(codigo);
 
     }
+
+    // precoKm = distancia * precokm
+    // precoTotal = precoKm + taxaBase
+    public BigDecimal calcularTaxa(Integer codigo, Double distancia){
+        EmpresaModel empresaModel = empresaRepository.findById(codigo).orElse(null);
+        if ( empresaModel == null){
+            return null;
+        }
+
+        Double precokm = distancia * empresaModel.getTaxaBase();
+        BigDecimal precoTotal = empresaModel.getValorFinal().add(BigDecimal.valueOf(distancia));
+
+        empresaModel.setKmRodado(precokm);
+        empresaModel.setValorFinal(precoTotal);
+        empresaRepository.save(empresaModel);
+
+        return precoTotal;
 }

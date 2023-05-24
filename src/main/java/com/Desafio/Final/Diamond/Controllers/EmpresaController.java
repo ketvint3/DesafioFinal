@@ -11,6 +11,8 @@ import org.springframework.web.bind.annotation.*;
 public class EmpresaController {
     @Autowired
     private EmpresaService empresaService;
+    @Autowired
+    private MotoristaService motoristaService;
 
 
     //adicionar
@@ -46,6 +48,17 @@ public class EmpresaController {
         empresaService.remover(codigo);
         return new ResponseEntity(HttpStatus.OK);
     }
+    @GetMapping("/{codigo}/calcular")
+    @Operation(summary = "Calcula o total da taxa", description = "Faz a soma da taxa")
+    public ResponseEntity<BigDecimal> calcularTaxa(@PathVariable Integer codigo,
+                                                   @RequestParam Double kmRodado) {
 
+        BigDecimal precoTotal = empresaService.calcularTaxa(codigo, kmRodado);
+
+        if (precoTotal == null) {
+            return ResponseEntity.notFound().build();
+        }
+        return ResponseEntity.ok(precoTotal);
+    }
 }
 

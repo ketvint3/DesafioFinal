@@ -14,8 +14,6 @@ public class MotoristaController {
     @Autowired
     private MotoristaService service;
 
-    @Autowired
-    private Empresaservice empresaservice;
 
     @GetMapping(value = "/motoristas")
     @Operation(summary = "Listar Motoristas", description = "Método da api para listagem de todos os motoristas cadastrados no banco.")

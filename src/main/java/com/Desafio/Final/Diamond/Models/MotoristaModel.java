@@ -7,11 +7,22 @@ import lombok.Data;
 @Data
 @Entity(name = "tb_motorista")
 public class MotoristaModel {
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer id;
 
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id")
+    @NotNull
+    private Integer codigo;
+    @NotNull
+    @Size(min = 3, max = 55, message = "" +
+            "Nome deve conter no minimo 3 caracteres")
     private String nome;
+    @CPF
+    @NotNull
     private String cpf;
+    @Email
+    @NotNull
     private String email;
+    @NotNull
     private String veiculo;
 }
