@@ -23,5 +23,6 @@ public class EmpresaModel {
     private PagamentoModel pagamentoModel;
 
 
+
 }
 
