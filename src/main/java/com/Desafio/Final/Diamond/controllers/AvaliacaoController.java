@@ -15,9 +15,9 @@ public class AvaliacaoController {
     private AvaliacaoService avaliacaoService;
 
     @GetMapping(value = "/listar")
-    public ResponseEntity ListarPorAvaliacao(){
-        return new ResponseEntity(avaliacaoService.listar(), HttpStatus.OK);
-
+    public ResponseEntity ListarPorAvaliacao(AvaliacaoModel avaliacao){
+        avaliacaoService.listar(avaliacao);
+        return new ResponseEntity(avaliacao, HttpStatus.OK);
     }
 
     @PostMapping(value = "/adicionar")
@@ -34,7 +34,7 @@ public class AvaliacaoController {
 
     @DeleteMapping(value = "/deletar/{codigo}")
     public ResponseEntity deletar (@PathVariable Integer codigo){
-        return new ResponseEntity<>(HttpStatus.OK);
+        return new ResponseEntity(HttpStatus.OK);
     }
 
 
