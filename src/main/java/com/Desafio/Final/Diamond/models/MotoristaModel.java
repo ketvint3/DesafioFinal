@@ -14,7 +14,6 @@ public class MotoristaModel {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
-    @NotNull
     private Integer codigo;
     @NotNull
     @Size(min = 3, max = 55, message = "" +

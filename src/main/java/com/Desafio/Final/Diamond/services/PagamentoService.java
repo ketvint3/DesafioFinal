@@ -1,7 +1,6 @@
 package com.Desafio.Final.Diamond.services;
 
 import com.Desafio.Final.Diamond.models.PagamentoModel;
-import com.Desafio.Final.Diamond.models.ValorModel;
 import com.Desafio.Final.Diamond.repositories.PagamentoRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

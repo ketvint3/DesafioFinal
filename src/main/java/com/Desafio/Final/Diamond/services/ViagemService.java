@@ -1,5 +1,6 @@
 package com.Desafio.Final.Diamond.services;
 
+import com.Desafio.Final.Diamond.models.DetalhePagamentoModel;
 import com.Desafio.Final.Diamond.models.PagamentoModel;
 import com.Desafio.Final.Diamond.models.ValorModel;
 import com.Desafio.Final.Diamond.models.ViagemModel;
@@ -34,6 +35,7 @@ public class ViagemService {
     }
 
     public void update(Integer codigo, ViagemModel viagem) {
+
         if (viagemRepository.existsById(codigo)) {
             viagemRepository.save(viagem);
         }
@@ -56,7 +58,7 @@ public class ViagemService {
         }
     }
 
-    public List<ViagemModel> listarPendentes () {
+    public List<ViagemModel> listarPendentes() {
 
         return viagemRepositoryCustom.listarPendentes();
     }
@@ -72,5 +74,10 @@ public class ViagemService {
 
         pagamento.setValorFinal(BigDecimal.valueOf(valorFinal));
         return valorFinal;
+    }
+
+    public Double calcularEmpresa(DetalhePagamentoModel detalhePagamento) {
+
+        return null;
     }
 }

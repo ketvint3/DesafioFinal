@@ -12,7 +12,6 @@ public class ViagemModel {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
-    @NotNull
     private Integer codigo;
     @NotNull
     @Column(length = 255)
@@ -25,12 +24,11 @@ public class ViagemModel {
     @Enumerated(EnumType.STRING)
     @Column(name = "status_viagem")
     private ViagemEnum statusViagem;
-
-    @NotNull
+    
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "motorista_id")
     private MotoristaModel motorista;
-    @NotNull
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "passageiro_id")
     private PassageiroModel passageiro;

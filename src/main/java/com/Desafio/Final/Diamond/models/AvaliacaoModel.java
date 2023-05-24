@@ -12,7 +12,6 @@ public class AvaliacaoModel {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
-    @NotNull
     private Integer codigo;
     @NotNull
     private AvaliacaoEnum avaliacao;

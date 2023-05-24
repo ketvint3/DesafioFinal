@@ -11,7 +11,6 @@ public class ValorModel {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
-    @NotNull
     private Integer codigo;
 
     @Column(name = "taxa_por_km")

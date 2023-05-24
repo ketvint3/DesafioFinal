@@ -10,5 +10,17 @@ spring:
     password: Ma12rilu10
   jpa:
     hibernate:
-      ddl-auto: create-drop
+      ddl-auto: update
     show-sql: true
+
+  mail:
+    host: smtp.gmail.com
+    port: 587
+    username: desafioedussincdiamond@gmail.com
+    password: numsey04
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true

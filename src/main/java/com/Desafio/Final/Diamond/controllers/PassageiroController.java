@@ -130,7 +130,10 @@ public class PassageiroController {
             return ResponseEntity.notFound().build();
         }
     }
-    public String forgotPassword(@RequestBody String email) {
+
+    @PostMapping (value = "/senha")
+
+    public String recuperarSenha(@RequestParam String email) {
 
         PassageiroModel passageiro = passageiroService.buscarPorEmail(email);
 

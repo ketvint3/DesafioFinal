@@ -1,4 +1,4 @@
-package com.Desafio.Final.Diamond.email;
+package com.Desafio.Final.Diamond.config.email;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -13,8 +13,8 @@ public class Email {
         JavaMailSenderImpl mailSender = new JavaMailSenderImpl();
         mailSender.setHost("smtp.gmail.com");
         mailSender.setPort(587);
-        mailSender.setUsername("seu-email@gmail.com");
-        mailSender.setPassword("sua-senha");
+        mailSender.setUsername("desafioedussincdiamond@gmail.com");
+        mailSender.setPassword("numsey04");
 
         Properties props = mailSender.getJavaMailProperties();
         props.put("mail.transport.protocol", "smtp");

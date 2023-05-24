@@ -3,8 +3,8 @@ package com.Desafio.Final.Diamond.controllers;
 import com.Desafio.Final.Diamond.models.*;
 import com.Desafio.Final.Diamond.models.enu.ViagemEnum;
 
-import com.Desafio.Final.Diamond.repositories.facade.impl.AceitarViagemFacadeImpl;
-import com.Desafio.Final.Diamond.repositories.facade.impl.FinalizarViagemFacadeImpl;
+import com.Desafio.Final.Diamond.facade.impl.AceitarViagemFacadeImpl;
+import com.Desafio.Final.Diamond.facade.impl.FinalizarViagemFacadeImpl;
 import com.Desafio.Final.Diamond.services.*;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -91,14 +91,15 @@ public class ViagemController {
     @ApiResponse(responseCode = "404", description = "Erro na operação!")
     @ApiResponse(responseCode = "500", description = "Erro inesperado!")
 
-    public ResponseEntity alterar(@PathVariable Integer codigo, @RequestBody ViagemModel viagem) {
+    public ResponseEntity alterar(@PathVariable Integer codigo,
+                                  @RequestBody ViagemModel viagem) {
 
         try {
             viagemService.update(codigo, viagem);
+            return new ResponseEntity("Alterado com sucesso!", HttpStatus.OK);
         } catch (NoSuchElementException e) {
-            return new ResponseEntity("Não foi possível alterar", HttpStatus.BAD_REQUEST);
+            return new ResponseEntity("Não foi possível alterar. ", HttpStatus.BAD_REQUEST);
         }
-        return new ResponseEntity(viagem, HttpStatus.OK);
     }
 
     @DeleteMapping(value = "/deletar/{codigo}")

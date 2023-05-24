@@ -1,4 +1,4 @@
-package com.Desafio.Final.Diamond.repositories.facade;
+package com.Desafio.Final.Diamond.facade;
 
 import org.springframework.stereotype.Repository;
 

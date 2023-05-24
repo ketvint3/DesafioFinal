@@ -1,9 +1,9 @@
-package com.Desafio.Final.Diamond.repositories.facade.impl;
+package com.Desafio.Final.Diamond.facade.impl;
 
 import com.Desafio.Final.Diamond.models.MotoristaModel;
 import com.Desafio.Final.Diamond.models.ViagemModel;
 import com.Desafio.Final.Diamond.models.enu.ViagemEnum;
-import com.Desafio.Final.Diamond.repositories.facade.AceitarViagemFacade;
+import com.Desafio.Final.Diamond.facade.AceitarViagemFacade;
 import com.Desafio.Final.Diamond.services.MotoristaService;
 
 import com.Desafio.Final.Diamond.services.ViagemService;

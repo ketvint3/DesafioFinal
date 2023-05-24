@@ -24,9 +24,7 @@ public class PagamentoModel {
 
     @ManyToOne
     @JoinColumn(name = "valor_id")
-    @NotNull
     private ValorModel valor;
-
 
     // O pagamento vai ser de acordo com o km
     // pagamento = pagamento base  da viagem + Km a ser rodado * taxa do Km rodado

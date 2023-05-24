@@ -9,6 +9,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.NoSuchElementException;
+
 @RestController
 @RequestMapping("/avaliacao")
 public class AvaliacaoController {
@@ -24,6 +26,7 @@ public class AvaliacaoController {
 
     public ResponseEntity novaAvaliacao(@RequestBody AvaliacaoModel avaliacao){
         avaliacaoService.adicionar(avaliacao);
+
         return new ResponseEntity(avaliacao, HttpStatus.CREATED);
 
     }
@@ -34,6 +37,7 @@ public class AvaliacaoController {
     @ApiResponse(responseCode = "500", description = "Erro inesperado!")
 
     public ResponseEntity ListarPorAvaliacao(){
+
         return new ResponseEntity(avaliacaoService.listar(), HttpStatus.OK);
 
     }
@@ -46,13 +50,23 @@ public class AvaliacaoController {
     public ResponseEntity alterar (@PathVariable Integer codigo,
                                    @RequestBody AvaliacaoModel avaliacao){
 
-        return new ResponseEntity<>(codigo, HttpStatus.OK);
-
+        try {
+            avaliacaoService.update(codigo, avaliacao);
+        } catch (NoSuchElementException e) {
+            return new ResponseEntity("Não foi possível alterar. ", HttpStatus.BAD_REQUEST);
+        }
+        return new ResponseEntity("Avaliação alterada com sucesso!", HttpStatus.OK);
     }
 
-    @DeleteMapping(value = "/deletar/{codigo}")
-    public ResponseEntity deletar (@PathVariable Integer codigo){
 
-        return new ResponseEntity<>(HttpStatus.OK);
+    @DeleteMapping(value = "/deletar/{codigo}")
+    public ResponseEntity deletar (@PathVariable Integer codigo) {
+
+        try {
+            avaliacaoService.remover(codigo);
+        } catch (NoSuchElementException e) {
+            return new ResponseEntity("Código inválido!", HttpStatus.BAD_REQUEST);
+        }
+        return new ResponseEntity("Avaliação do código " + codigo + " foi removida! ", HttpStatus.OK);
     }
 }
