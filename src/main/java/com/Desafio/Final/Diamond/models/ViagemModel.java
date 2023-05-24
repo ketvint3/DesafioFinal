@@ -2,6 +2,7 @@ package com.Desafio.Final.Diamond.models;
 
 import com.Desafio.Final.Diamond.models.enu.ViagemEnum;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 
 @Data
@@ -11,22 +12,30 @@ public class ViagemModel {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
+    @NotNull
     private Integer codigo;
+    @NotNull
     @Column(length = 255)
     private String partida;
+    @NotNull
     @Column(length = 255)
     private String chegada;
+    @NotNull
+    @Enumerated(EnumType.STRING)
     @Column(name = "status_viagem")
     private ViagemEnum statusViagem;
 
-    @ManyToOne
+    @NotNull
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "motorista_id")
     private MotoristaModel motorista;
-    @ManyToOne
+
+    @NotNull
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "passageiro_id")
     private PassageiroModel passageiro;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "localizacao_id")
     private LocalizacaoModel localizacao;
 
