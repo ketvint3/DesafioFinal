@@ -32,9 +32,13 @@ public class PagamentoController {
                                         @RequestParam Integer valorId) {
 
         pagamentoModel.setValor(valorService.buscarCodigo(valorId));
-        pagamentoService.savePagamento(pagamentoModel);
 
-        return new ResponseEntity("Seu pagamento foi adicionado! ", HttpStatus.CREATED);
+        try {
+            pagamentoService.savePagamento(pagamentoModel);
+            return new ResponseEntity("Seu pagamento foi adcionado!", HttpStatus.CREATED);
+        } catch (Exception e) {
+            return new ResponseEntity("Não foi possivel adicionar pagamento! Tente novamente.", HttpStatus.BAD_REQUEST);
+        }
     }
 
     @GetMapping(value = "/listar")
@@ -58,8 +62,13 @@ public class PagamentoController {
     @ApiResponse(responseCode = "404", description = "Erro na operação!")
     @ApiResponse(responseCode = "500", description = "Erro inesperado!")
 
-    public void deletePagamentoModel(@PathVariable Integer codigo) {
+    public ResponseEntity deletePagamentoModel(@PathVariable Integer codigo) {
 
-        pagamentoService.deletePagamentoModel(codigo);
+        try {
+            pagamentoService.deletePagamentoModel(codigo);
+            return new ResponseEntity("Pagamento do código " + codigo + "foi removido!", HttpStatus.OK);
+        } catch (NoSuchElementException e) {
+            return new ResponseEntity("Erro! Tente novamente.", HttpStatus.BAD_REQUEST);
+        }
     }
 }

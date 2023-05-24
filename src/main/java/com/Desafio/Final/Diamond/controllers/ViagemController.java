@@ -3,7 +3,8 @@ package com.Desafio.Final.Diamond.controllers;
 import com.Desafio.Final.Diamond.models.*;
 import com.Desafio.Final.Diamond.models.enu.ViagemEnum;
 
-import com.Desafio.Final.Diamond.repositories.facade.impl.MetodosFacadeImpl;
+import com.Desafio.Final.Diamond.repositories.facade.impl.AceitarViagemFacadeImpl;
+import com.Desafio.Final.Diamond.repositories.facade.impl.FinalizarViagemFacadeImpl;
 import com.Desafio.Final.Diamond.services.*;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -11,8 +12,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import java.math.BigDecimal;
 import java.util.NoSuchElementException;
 
 @RestController
@@ -24,7 +23,11 @@ public class ViagemController {
     @Autowired
     private PassageiroService passageiroService;
     @Autowired
-    private MetodosFacadeImpl metodosFacadeimpl;
+    private PagamentoService pagamentoService;
+    @Autowired
+    private AceitarViagemFacadeImpl aceitarViagemFacade;
+    @Autowired
+    private FinalizarViagemFacadeImpl finalizarViagemFacade;
 
     @PostMapping(value = "/cadastrar")
     @Operation(summary = "Solicitar viagem", description = "Faz a solicitação das viagens")
@@ -33,10 +36,14 @@ public class ViagemController {
     @ApiResponse(responseCode = "500", description = "Erro inesperado!")
 
     public ResponseEntity cadastrar(@RequestBody ViagemModel viagem,
-                                    @RequestParam Integer codigoPassageiro) {
+                                    @RequestParam Integer codigoPassageiro,
+                                    @RequestParam(required = false) Integer codigoPagamento) {
 
         PassageiroModel passageiro = passageiroService.buscarCodigo(codigoPassageiro);
         viagem.setPassageiro(passageiro);
+
+        PagamentoModel pagamento = pagamentoService.buscarCodigo(codigoPagamento);
+        viagem.setPagamento(pagamento);
 
         viagem.setStatusViagem(ViagemEnum.PENDENTE);
 
@@ -118,6 +125,7 @@ public class ViagemController {
     @ApiResponse(responseCode = "500", description = "Erro inesperado!")
 
     public ResponseEntity cancelarviagem(@PathVariable Integer codigo) {
+
         ViagemModel viagem = viagemService.buscarCodigo(codigo);
 
         if (viagem != null) {
@@ -140,15 +148,9 @@ public class ViagemController {
     public ResponseEntity aceitarViagem(@PathVariable Integer codigo,
                                         @RequestParam Integer motoristaId) {
 
-        ViagemModel viagemModel = viagemService.buscarCodigo(codigo);
+        boolean aceitarViagem = aceitarViagemFacade.aceitarViagem(codigo, motoristaId);
 
-        if (viagemModel != null) {
-            viagemModel.setStatusViagem(ViagemEnum.EM_ANDAMENTO);
-
-            MotoristaModel motoristaModel = metodosFacadeimpl.buscarCodigoDeMotorista(motoristaId);
-            viagemModel.setMotorista(motoristaModel);
-
-            viagemService.update(codigo, viagemModel);
+        if (aceitarViagem) {
             return new ResponseEntity<>("Viagem aceita com sucesso!", HttpStatus.OK);
         } else {
             return new ResponseEntity("Viagem inválida!", HttpStatus.BAD_REQUEST);
@@ -164,23 +166,10 @@ public class ViagemController {
                                           @RequestBody PagamentoModel pagamento,
                                           @RequestParam Integer codigoPagamento) {
 
-        pagamento.setValor(metodosFacadeimpl.buscarCodigoDeValor(codigoPagamento));
+        boolean finalizarViagem = finalizarViagemFacade.finalizarViagem(codigo, pagamento, codigoPagamento);
 
-        Double valorFinal = viagemService.calcularPagamento(codigo);
-        pagamento.setValorFinal(BigDecimal.valueOf(valorFinal));
-
-        metodosFacadeimpl.salvarPagamento(pagamento);
-
-        ViagemModel viagemModel = viagemService.buscarCodigo(codigo);
-
-        if (viagemModel != null) {
-            viagemModel.setStatusViagem(ViagemEnum.FINALIZADO);
-            viagemService.update(codigo, viagemModel);
-
-            if (valorFinal != null) {
+            if (finalizarViagem) {
             return new ResponseEntity("Sua viagem foi finalizada!", HttpStatus.OK);
-            }
-            return ResponseEntity.notFound().build();
         } else {
             return new ResponseEntity<>("Viagem inválida!", HttpStatus.BAD_REQUEST);
         }

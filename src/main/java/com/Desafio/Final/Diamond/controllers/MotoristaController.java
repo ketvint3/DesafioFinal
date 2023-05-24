@@ -32,7 +32,8 @@ public class MotoristaController {
     @ApiResponse(responseCode = "404", description = "Erro na operação!")
     @ApiResponse(responseCode = "500", description = "Erro inesperado!")
 
-    public ResponseEntity cadastrar(@Valid @RequestBody MotoristaModel codigo) {
+    public ResponseEntity cadastrar(@Valid
+                                    @RequestBody MotoristaModel codigo) {
 
         try {
             service.adicionar(codigo);
@@ -74,7 +75,11 @@ public class MotoristaController {
 
     public ResponseEntity listar() {
 
-        return new ResponseEntity(service.listar(), HttpStatus.OK);
+        try {
+            return new ResponseEntity(service.listar(), HttpStatus.OK);
+        } catch (Exception e) {
+            return new ResponseEntity("Erro! Tente novamente.", HttpStatus.BAD_REQUEST);
+        }
     }
 
     @GetMapping(value = "/listar/{codigo}")
@@ -88,7 +93,8 @@ public class MotoristaController {
         try {
             return new ResponseEntity(service.buscarCodigo(codigo), HttpStatus.OK);
         } catch (NoSuchElementException e) {
-            return new ResponseEntity( "Código Inválido!", HttpStatus.NOT_FOUND);        }
+            return new ResponseEntity( "Código Inválido!", HttpStatus.NOT_FOUND);
+        }
     }
 
     @PutMapping(value = "/alterar/{id}")
@@ -102,7 +108,7 @@ public class MotoristaController {
             service.update(codigo, motorista);
             return new ResponseEntity("Motorista alterado com sucesso!", HttpStatus.OK);
         } catch (Exception e) {
-            return new ResponseEntity("Não foi possivel alterar o perfil de motorista! Tente novamente", HttpStatus.BAD_REQUEST);
+            return new ResponseEntity("Erro! Tente novamente.", HttpStatus.BAD_REQUEST);
         }
     }
     @DeleteMapping(value = "/deletar/{id}")

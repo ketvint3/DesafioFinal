@@ -61,14 +61,12 @@ public class ViagemService {
         return viagemRepositoryCustom.listarPendentes();
     }
 
-    public Double calcularPagamento(Integer codigo) {
+    public Double calcularPagamento(PagamentoModel pagamento) {
 
-        Optional<PagamentoModel> pagamentoModel = pagamentoRepository.findById(codigo);
-        if (pagamentoModel.isEmpty()) {
+        if (pagamento == null) {
 
             return null;
         }
-        PagamentoModel pagamento = pagamentoModel.get();
 
         double valorFinal = pagamento.getValor().getValorBase() + pagamento.getKmRodado() * pagamento.getValor().getTaxaPorKm();
 

@@ -33,9 +33,15 @@ public class PassageiroController {
     @ApiResponse(responseCode = "404", description = "Erro na operação!")
     @ApiResponse(responseCode = "500", description = "Erro inesperado!")
 
-    public ResponseEntity cadastrar(@Valid @RequestBody PassageiroModel passageiro) {
-        passageiroService.adicionarPassageiro(passageiro);
-        return ResponseEntity.status(HttpStatus.CREATED).body("Passageiro adicionado com sucesso!");
+    public ResponseEntity cadastrar(@Valid
+                                    @RequestBody PassageiroModel passageiro) {
+
+        try {
+            passageiroService.adicionarPassageiro(passageiro);
+            return new ResponseEntity("Passageiro cadastrado com sucesso!", HttpStatus.OK);
+        } catch (Exception e) {
+            return new ResponseEntity("Erro! Tente novamente.", HttpStatus.BAD_REQUEST);
+        }
     }
 
     @PostMapping("/foto/{codigo}")
@@ -58,7 +64,7 @@ public class PassageiroController {
             FileUploadUtil.saveFile(uploadDir, fileName, multipartfile);
             return new ResponseEntity("Imagem salva com sucesso!", HttpStatus.OK);
         } catch (IOException e){
-            return new ResponseEntity("Não foi possivel salvar a imagem! Tente novamente.", HttpStatus.BAD_REQUEST);
+            return new ResponseEntity("Erro! Tente novamente.", HttpStatus.BAD_REQUEST);
         }
     }
 
@@ -69,7 +75,12 @@ public class PassageiroController {
     @ApiResponse(responseCode = "500", description = "Erro inesperado!")
 
     public ResponseEntity listar() {
-        return new ResponseEntity<>(passageiroService.listarPassageiros(), HttpStatus.OK);
+
+        try {
+            return new ResponseEntity(passageiroService.listarPassageiros(), HttpStatus.OK);
+        } catch (Exception e) {
+            return new ResponseEntity("Erro! Tente novamente.", HttpStatus.BAD_REQUEST);
+        }
     }
 
     @GetMapping(value = "/listar/{id}")
@@ -86,20 +97,22 @@ public class PassageiroController {
             return ResponseEntity.notFound().build();
         }
     }
+
     @PutMapping(value = "/alterar/{id}")
     @Operation(summary = "Atualizar passageiro", description = "Método da api para alterar os dados de um passageiro")
     @ApiResponse(responseCode = "200", description = "Operação concluida com sucesso!")
     @ApiResponse(responseCode = "404", description = "Erro na operação!")
     @ApiResponse(responseCode = "500", description = "Erro inesperado!")
 
-    public ResponseEntity atualizar(@PathVariable Integer codigo, @RequestBody PassageiroModel passageiro) {
+    public ResponseEntity atualizar(@PathVariable Integer codigo,
+                                    @RequestBody PassageiroModel passageiro) {
 
         try {
             passageiroService.atualizarPassageiro(codigo, passageiro);
         } catch (NoSuchElementException e) {
             return new ResponseEntity("Não foi possível alterar", HttpStatus.BAD_REQUEST);
         }
-        return new ResponseEntity(passageiro, HttpStatus.OK);
+        return new ResponseEntity("Seu passageiro foi atualizado!" + passageiro, HttpStatus.OK);
     }
 
     @DeleteMapping(value = "/deletar/{id}")
