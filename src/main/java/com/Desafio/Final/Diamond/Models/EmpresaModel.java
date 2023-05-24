@@ -21,15 +21,6 @@ public class EmpresaModel {
     @JoinColumn(name = "motorista_id")
     private MotoristaModel motoristaid;
     private PagamentoModel pagamentoModel;
-    @Column(name = "km_rodado")
-    private Double kmRodado;
-    @Column(name = "valor_final")
-    private  BigDecimal valorFinal;
-    @Column(name = "distancia")
-    private Double distacia;
-    @Column(name = "taxa_Base")
-    private Double taxaBase;
-
 
 
 }
