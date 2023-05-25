@@ -70,7 +70,8 @@ public class ValorController {
         @ApiResponse(responseCode = "404", description = "Erro na operação!")
         @ApiResponse(responseCode = "500", description = "Erro inesperado!")
 
-        public ResponseEntity alterar(@PathVariable Integer codigo, @RequestBody ValorModel valorModel) {
+        public ResponseEntity alterar(@PathVariable Integer codigo,
+                                      @RequestBody ValorModel valorModel) {
 
             try {
                 valorService.alterar(codigo, valorModel);

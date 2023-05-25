@@ -70,7 +70,8 @@ public class DetalhePagamentoController {
     @ApiResponse(responseCode = "404", description = "Erro na operação!")
     @ApiResponse(responseCode = "500", description = "Erro inesperado!")
 
-    public ResponseEntity alterar(@PathVariable Integer codigo, @RequestBody DetalhePagamentoModel detalhePagamento) {
+    public ResponseEntity alterar(@PathVariable Integer codigo,
+                                  @RequestBody DetalhePagamentoModel detalhePagamento) {
 
         try {
             detalhePagamentoService.alterar(codigo, detalhePagamento);

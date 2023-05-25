@@ -50,20 +50,22 @@ public class PassageiroController {
         }
     }
 
-    @PostMapping("/foto/{codigo}")
+    @PutMapping("/foto/{codigo}")
     @Operation(summary = "Salvar como imagem de perfil ", description = "Cadastar imagem de perfil")
     @ApiResponse(responseCode = "200", description = "Operação concluida com sucesso!")
     @ApiResponse(responseCode = "404", description = "Erro na operação!")
     @ApiResponse(responseCode = "500", description = "Erro inesperado!")
-    public ResponseEntity salvarImagemPassageiro(PassageiroModel Passageiro,
+    public ResponseEntity salvarImagemPassageiro(@PathVariable Integer codigo,
                                                  @RequestParam("Image")
                                                  MultipartFile multipartfile) throws IOException {
         try {
 
-            String fileName = StringUtils.cleanPath(multipartfile.getOriginalFilename());
-            Passageiro.setPhotos(fileName);
+            PassageiroModel passageiroModel = passageiroService.buscarCodigo(codigo);
 
-            PassageiroModel fotoPassageiro = passageiroRepository.save(Passageiro);
+            String fileName = StringUtils.cleanPath(multipartfile.getOriginalFilename());
+            passageiroModel.setPhotos(fileName);
+
+            PassageiroModel fotoPassageiro = passageiroRepository.save(passageiroModel);
 
             String uploadDir = "Passageiro-photos/" + fotoPassageiro.getCodigo();
 
@@ -89,14 +91,15 @@ public class PassageiroController {
         }
     }
 
-    @GetMapping(value = "/listar/{id}")
+    @GetMapping(value = "/listar/{codigo}")
     @Operation(summary = "Listar código do passageiro", description = "Método da api para listagem do passageiro, conforme seu código informado na plataforma")
     @ApiResponse(responseCode = "200", description = "Operação concluida com sucesso!")
     @ApiResponse(responseCode = "404", description = "Erro na operação!")
     @ApiResponse(responseCode = "500", description = "Erro inesperado!")
 
-    public ResponseEntity listarCodigo(@PathVariable Integer id) {
-        PassageiroModel passageiro = passageiroService.buscarCodigo(id);
+    public ResponseEntity listarCodigo(@PathVariable Integer codigo) {
+
+        PassageiroModel passageiro = passageiroService.buscarCodigo(codigo);
         if (passageiro != null) {
             return ResponseEntity.ok(passageiro);
         } else {
@@ -104,7 +107,7 @@ public class PassageiroController {
         }
     }
 
-    @PutMapping(value = "/alterar/{id}")
+    @PutMapping(value = "/alterar/{codigo}")
     @Operation(summary = "Atualizar passageiro", description = "Método da api para alterar os dados de um passageiro")
     @ApiResponse(responseCode = "200", description = "Operação concluida com sucesso!")
     @ApiResponse(responseCode = "404", description = "Erro na operação!")
@@ -118,19 +121,21 @@ public class PassageiroController {
         } catch (NoSuchElementException e) {
             return new ResponseEntity("Não foi possível alterar", HttpStatus.BAD_REQUEST);
         }
-        return new ResponseEntity("Seu passageiro foi atualizado!" + passageiro, HttpStatus.OK);
+        return new ResponseEntity("Seu passageiro foi atualizado!", HttpStatus.OK);
     }
 
-    @DeleteMapping(value = "/deletar/{id}")
+    @DeleteMapping(value = "/deletar/{codigo}")
     @Operation(summary = "Deletar passageiro", description = "Método da api para exclusão de um passageiro da plataforma")
     @ApiResponse(responseCode = "200", description = "Operação concluida com sucesso!")
     @ApiResponse(responseCode = "404", description = "Erro na operação!")
     @ApiResponse(responseCode = "500", description = "Erro inesperado!")
 
-    public ResponseEntity deletar(@PathVariable Integer id) {
-        PassageiroModel passageiro = passageiroService.buscarCodigo(id);
+    public ResponseEntity deletar(@PathVariable Integer codigo) {
+
+        PassageiroModel passageiro = passageiroService.buscarCodigo(codigo);
+
         if (passageiro != null) {
-            passageiroService.removerPassageiro(id);
+            passageiroService.removerPassageiro(codigo);
             return ResponseEntity.ok("Passageiro removido com sucesso!");
         } else {
             return ResponseEntity.notFound().build();

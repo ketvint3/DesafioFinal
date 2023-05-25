@@ -29,7 +29,14 @@ public class FinalizarViagemFacadeImpl implements FinalizarViagemFacade {
 
         pagamento.setValor(valorService.buscarCodigo(codigoValor));
 
-        Double valorFinal = viagemService.calcularPagamento(pagamento);
+        ViagemModel viagemModel = viagemService.buscarCodigo(codigoViagem);
+
+        Double distancia = viagemService.calcularDistancia(viagemModel.getLatitudePartida(), viagemModel.getLatitudeChegada(),
+                viagemModel.getLongitudePartida(), viagemModel.getLongitudeChegada());
+
+        Double valorFinal = viagemService.calcularPagamento(pagamento, distancia);
+
+        pagamento.setDistancia(distancia);
         pagamento.setValorFinal(BigDecimal.valueOf(valorFinal));
 
         BigDecimal valorEmpresa = viagemService.calcularTaxaEmpresa(pagamento);
@@ -44,7 +51,6 @@ public class FinalizarViagemFacadeImpl implements FinalizarViagemFacade {
         pagamento.setDetalhePagamento(detalhePagamentoModel);
         pagamentoService.savePagamento(pagamento);
 
-        ViagemModel viagemModel = viagemService.buscarCodigo(codigoViagem);
         viagemModel.setPagamento(pagamento);
 
         if (viagemModel != null) {

@@ -1,7 +1,6 @@
 package com.Desafio.Final.Diamond.models;
 
 import jakarta.persistence.*;
-import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 
 import java.math.BigDecimal;
@@ -15,9 +14,7 @@ public class PagamentoModel {
     @Column(name = "id")
     private Integer codigo;
 
-    @Column(name = "km_rodado")
-    @NotNull
-    private Double kmRodado;
+    private Double distancia;
 
     @Column(name = "valor_final")
     private BigDecimal valorFinal;

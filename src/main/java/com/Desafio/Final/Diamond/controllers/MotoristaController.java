@@ -48,22 +48,24 @@ public class MotoristaController {
         }
     }
 
-    @PostMapping("/foto/{codigo}")
+    @PutMapping("/foto/{codigo}")
     @Operation(summary = "Salva imagem de perfil do motorista", description = "Método da api para cadastrar imagem de perfil do motoca")
     @ApiResponse(responseCode = "200", description = "Operação concluida com sucesso!")
     @ApiResponse(responseCode = "404", description = "Erro na operação!")
     @ApiResponse(responseCode = "500", description = "Erro inesperado!")
-    public ResponseEntity salvarImagemMotorista(MotoristaModel motorista,
+    public ResponseEntity salvarImagemMotorista(@PathVariable Integer codigo,
                                                 @RequestParam("Image")
                                                 MultipartFile multipartfile) throws IOException {
         try {
+
+            MotoristaModel motorista = service.buscarCodigo(codigo);
 
             String fileName = StringUtils.cleanPath(multipartfile.getOriginalFilename());
             motorista.setPhotos(fileName);
 
             MotoristaModel fotoMotorista = repository.save(motorista);
 
-            String uploadDir = "motorista-photos/" + fotoMotorista.getCodigo();
+            String uploadDir = "Motorista-photos/" + fotoMotorista.getCodigo();
 
             FileUploadUtil.saveFile(uploadDir, fileName, multipartfile);
             return new ResponseEntity("Imagem salva com sucesso!", HttpStatus.OK);
@@ -102,13 +104,15 @@ public class MotoristaController {
         }
     }
 
-    @PutMapping(value = "/alterar/{id}")
+    @PutMapping(value = "/alterar/{codigo}")
     @Operation(summary = "Altera o motorista", description = "Método da api para alterar os dados de um motorista")
     @ApiResponse(responseCode = "200", description = "Operação concluida com sucesso!")
     @ApiResponse(responseCode = "404", description = "Erro na operação!")
     @ApiResponse(responseCode = "500", description = "Erro inesperado!")
 
-    public ResponseEntity alterar(@PathVariable Integer codigo, @RequestBody MotoristaModel motorista) {
+    public ResponseEntity alterar(@PathVariable Integer codigo,
+                                  @RequestBody MotoristaModel motorista) {
+
         try {
             service.update(codigo, motorista);
             return new ResponseEntity("Motorista alterado com sucesso!", HttpStatus.OK);
@@ -116,18 +120,21 @@ public class MotoristaController {
             return new ResponseEntity("Erro! Tente novamente.", HttpStatus.BAD_REQUEST);
         }
     }
-    @DeleteMapping(value = "/deletar/{id}")
+    @DeleteMapping(value = "/deletar/{codigo}")
     @Operation(summary = "Deleta motorista", description = "Método da api para exclusão de um motorista da plataforma")
     @ApiResponse(responseCode = "200", description = "Operação concluida com sucesso!")
     @ApiResponse(responseCode = "404", description = "Erro na operação!")
     @ApiResponse(responseCode = "500", description = "Erro inesperado!")
 
     public ResponseEntity deletar(@PathVariable Integer codigo) {
-        try {
+
+        MotoristaModel motoristaModel = service.buscarCodigo(codigo);
+
+        if (motoristaModel != null) {
             service.remover(codigo);
-            return new ResponseEntity("Motorista do código" + codigo + "foi removido com sucesso!", HttpStatus.OK);
-        } catch (Exception e) {
-            return new ResponseEntity("Código invalido!", HttpStatus.BAD_REQUEST);
+            return ResponseEntity.ok("Motorista removido com sucesso!");
+        } else {
+            return ResponseEntity.notFound().build();
         }
     }
 

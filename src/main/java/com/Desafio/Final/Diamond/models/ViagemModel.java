@@ -14,11 +14,20 @@ public class ViagemModel {
     @Column(name = "id")
     private Integer codigo;
     @NotNull
-    @Column(length = 255)
-    private String partida;
+    @Column(name = "latitude_partida")
+    private Double latitudePartida;
+
     @NotNull
-    @Column(length = 255)
-    private String chegada;
+    @Column(name = "longitude_partida")
+    private Double longitudePartida;
+
+    @NotNull
+    @Column(name = "latitude_chegada")
+    private Double latitudeChegada;
+
+    @NotNull
+    @Column(name = "longitude_chegada")
+    private Double longitudeChegada;
 
     @NotNull
     @Enumerated(EnumType.STRING)
