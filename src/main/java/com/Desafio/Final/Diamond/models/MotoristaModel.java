@@ -26,6 +26,8 @@ public class MotoristaModel {
     @NotNull
     private String email;
     @NotNull
+    private String senha;
+    @NotNull
     private String veiculo;
 
     @Column(nullable = true, length = 64)

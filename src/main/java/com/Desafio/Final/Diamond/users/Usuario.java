@@ -32,7 +32,9 @@ public class Usuario implements UserDetails {
     }
 
     @Override
-    public String getUsername() { return name; }
+    public String getUsername() {
+        return name;
+    }
 
     @Override
     public boolean isAccountNonExpired() { return true; }

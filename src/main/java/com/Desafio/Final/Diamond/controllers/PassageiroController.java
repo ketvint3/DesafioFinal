@@ -10,6 +10,9 @@ import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.mail.MailException;
+import org.springframework.mail.SimpleMailMessage;
+import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -20,6 +23,9 @@ import java.util.NoSuchElementException;
 @RestController
 @RequestMapping(value = "/passageiro")
 public class PassageiroController {
+
+    @Autowired
+    private JavaMailSender emailSender;
 
     @Autowired
     private PassageiroService passageiroService;
@@ -63,7 +69,7 @@ public class PassageiroController {
 
             FileUploadUtil.saveFile(uploadDir, fileName, multipartfile);
             return new ResponseEntity("Imagem salva com sucesso!", HttpStatus.OK);
-        } catch (IOException e){
+        } catch (IOException e) {
             return new ResponseEntity("Erro! Tente novamente.", HttpStatus.BAD_REQUEST);
         }
     }
@@ -131,23 +137,35 @@ public class PassageiroController {
         }
     }
 
-    @PostMapping (value = "/senha")
+    @PostMapping(value = "/senha/{email}")
+    @Operation(summary = "Criar nova senha",description = "Método da api para envio de nova senha para o email do passageiro")
+    @ApiResponse(responseCode = "200",description = "Operação concluida com sucesso!")
+    @ApiResponse(responseCode = "404",description = "Erro na operação!")
+    @ApiResponse(responseCode = "500",description = "Erro inesperado!")
 
-    public String recuperarSenha(@RequestParam String email) {
-
+    @ResponseBody
+    public String enviarSenha(@PathVariable String email) {
         PassageiroModel passageiro = passageiroService.buscarPorEmail(email);
 
         if (passageiro == null) {
-            return "Usuário não encontrado";
+            return "E-mail não encontrado";
+
         }
 
         String novaSenha = passageiroService.gerarNovaSenha();
-
         passageiro.setSenha(novaSenha);
-        passageiroService.atualizarPassageiro(passageiro.getCodigo(), passageiro);
+        passageiroService.adicionarPassageiro(passageiro);
 
-        passageiroService.enviarEmailSenha(passageiro.getEmail(), novaSenha);
+        SimpleMailMessage message = new SimpleMailMessage();
+        message.setTo(passageiro.getEmail());
+        message.setSubject("Senha de acesso");
+        message.setText("Sua nova senha de acesso é: " + novaSenha);
 
-        return "E-mail com a nova senha enviado";
+        try {
+            emailSender.send(message);
+            return "Nova senha enviada com sucesso";
+        } catch (MailException e) {
+            return "Erro ao enviar e-mail";
+        }
     }
 }

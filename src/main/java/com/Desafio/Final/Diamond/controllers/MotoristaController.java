@@ -10,6 +10,9 @@ import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.mail.MailException;
+import org.springframework.mail.SimpleMailMessage;
+import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -20,6 +23,8 @@ import java.util.NoSuchElementException;
 @RestController
 @RequestMapping("/motorista")
 public class MotoristaController {
+    @Autowired
+    private JavaMailSender emailSender;
 
     @Autowired
     private MotoristaService service;
@@ -123,6 +128,37 @@ public class MotoristaController {
             return new ResponseEntity("Motorista do código" + codigo + "foi removido com sucesso!", HttpStatus.OK);
         } catch (Exception e) {
             return new ResponseEntity("Código invalido!", HttpStatus.BAD_REQUEST);
+        }
+    }
+
+    @PostMapping("/senha/{email}")
+    @Operation(summary = "Criar nova senha",description = "Método da api para envio de nova senha para o email do motorista")
+    @ApiResponse(responseCode = "200",description = "Operação concluida com sucesso!")
+    @ApiResponse(responseCode = "404",description = "Erro na operação!")
+    @ApiResponse(responseCode = "500",description = "Erro inesperado!")
+    @ResponseBody
+    public String enviarSenha(@PathVariable String email) {
+        MotoristaModel motorista = service.buscarPorEmail(email);
+
+        if (motorista == null) {
+            return "E-mail não encontrado";
+
+        }
+
+        String novaSenha = service.gerarNovaSenha();
+        motorista.setSenha(novaSenha);
+        service.adicionar(motorista);
+
+        SimpleMailMessage message = new SimpleMailMessage();
+        message.setTo(motorista.getEmail());
+        message.setSubject("Senha de acesso");
+        message.setText("Sua nova senha de acesso é: " + novaSenha);
+
+        try {
+            emailSender.send(message);
+            return "Nova senha enviada com sucesso";
+        } catch (MailException e) {
+            return "Erro ao enviar e-mail";
         }
     }
 }
