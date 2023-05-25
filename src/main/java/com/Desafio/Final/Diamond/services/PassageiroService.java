@@ -44,14 +44,6 @@ public class PassageiroService {
 public PassageiroModel buscarPorEmail(String email) {
     return passageiroRepository.findByEmail(email);
 }
-    public void enviarEmailSenha(String email, String senha) {
-        SimpleMailMessage message = new SimpleMailMessage();
-        message.setTo(email);
-        message.setSubject("Senha de acesso");
-        message.setText("Sua senha de acesso é: " + senha);
-        emailSender.send(message);
-    }
-
     public String gerarNovaSenha() {
         int length = 8;
         String characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
