@@ -10,6 +10,9 @@ import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.mail.MailException;
+import org.springframework.mail.SimpleMailMessage;
+import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -20,7 +23,8 @@ import java.util.NoSuchElementException;
 @RestController
 @RequestMapping("/motorista")
 public class MotoristaController {
-
+    @Autowired
+    private JavaMailSender emailSender;
     @Autowired
     private MotoristaService service;
     @Autowired
@@ -61,7 +65,7 @@ public class MotoristaController {
 
             FileUploadUtil.saveFile(uploadDir, fileName, multipartfile);
             return new ResponseEntity("Avaliação cadastrada com sucesso!", HttpStatus.OK);
-        } catch (IOException e){
+        } catch (IOException e) {
             return new ResponseEntity("Não foi possivel cadastrar a avaliação! Tente novamente.", HttpStatus.BAD_REQUEST);
         }
     }
@@ -88,7 +92,7 @@ public class MotoristaController {
         try {
             return new ResponseEntity(service.buscarCodigo(codigo), HttpStatus.OK);
         } catch (NoSuchElementException e) {
-            return new ResponseEntity( "Código Inválido!", HttpStatus.NOT_FOUND);
+            return new ResponseEntity("Código Inválido!", HttpStatus.NOT_FOUND);
         }
     }
 
@@ -107,8 +111,9 @@ public class MotoristaController {
             return new ResponseEntity("Não foi possivel alterar a avaliação! Tente novamente", HttpStatus.BAD_REQUEST);
         }
     }
+
     @DeleteMapping(value = "/deletar/{id}")
-    @Operation(summary = "Deleta avaliação", description = "Método da api para exclusão de uma avaliação da plataforma")
+    @Operation(summary = "Deleta motorista", description = "Método da api para exclusão de um motorista da plataforma")
     @ApiResponse(responseCode = "200", description = "Operação concluida com sucesso!")
     @ApiResponse(responseCode = "404", description = "Erro na operação!")
     @ApiResponse(responseCode = "500", description = "Erro inesperado!")
@@ -116,9 +121,40 @@ public class MotoristaController {
     public ResponseEntity deletar(@PathVariable Integer codigo) {
         try {
             service.remover(codigo);
-            return new ResponseEntity("Avaliação do código" + codigo + "foi removida com sucesso!", HttpStatus.OK);
+            return new ResponseEntity("Remoção do perfil" + codigo + "foi removida com sucesso!", HttpStatus.OK);
         } catch (Exception e) {
             return new ResponseEntity("Código invalido!", HttpStatus.BAD_REQUEST);
+        }
+    }
+
+    @PostMapping("/enviar-senha/{email}")
+    @Operation(summary = "Criar nova senha",description = "Método da api para envio de nova senha para o email do motorista")
+    @ApiResponse(responseCode = "200",description = "Operação concluida com sucesso!")
+    @ApiResponse(responseCode = "404",description = "Erro na operação!")
+    @ApiResponse(responseCode = "500",description = "Erro inesperado!")
+    @ResponseBody
+    public String enviarSenha(@PathVariable String email) {
+        MotoristaModel motorista = service.buscarPorEmail(email);
+
+        if (motorista == null) {
+            return "E-mail não encontrado";
+
+        }
+
+        String novaSenha = service.gerarNovaSenha();
+        motorista.setSenha(novaSenha);
+        service.adicionar(motorista);
+
+        SimpleMailMessage message = new SimpleMailMessage();
+        message.setTo(motorista.getEmail());
+        message.setSubject("Senha de acesso");
+        message.setText("Sua nova senha de acesso é: " + novaSenha);
+
+        try {
+            emailSender.send(message);
+            return "Nova senha enviada com sucesso";
+        } catch (MailException e) {
+            return "Erro ao enviar e-mail";
         }
     }
 }

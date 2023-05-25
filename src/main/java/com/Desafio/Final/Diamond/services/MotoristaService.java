@@ -43,4 +43,18 @@ public class MotoristaService {
             repository.deleteById(codigo);
         }
     }
+    public MotoristaModel buscarPorEmail(String email) {
+        return repository.findByEmail(email);
+    }
+    public String gerarNovaSenha() {
+        int length = 8;
+        String characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+        StringBuilder newPassword = new StringBuilder();
+        for (int i = 0; i < length; i++) {
+            int randomIndex = (int) (Math.random() * characters.length());
+            newPassword.append(characters.charAt(randomIndex));
+        }
+
+        return newPassword.toString();
+    }
 }
