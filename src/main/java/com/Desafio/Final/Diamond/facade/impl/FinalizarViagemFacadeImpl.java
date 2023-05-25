@@ -1,9 +1,11 @@
 package com.Desafio.Final.Diamond.facade.impl;
 
 import com.Desafio.Final.Diamond.facade.FinalizarViagemFacade;
+import com.Desafio.Final.Diamond.models.DetalhePagamentoModel;
 import com.Desafio.Final.Diamond.models.PagamentoModel;
 import com.Desafio.Final.Diamond.models.ViagemModel;
 import com.Desafio.Final.Diamond.models.enu.ViagemEnum;
+import com.Desafio.Final.Diamond.services.DetalhePagamentoService;
 import com.Desafio.Final.Diamond.services.PagamentoService;
 import com.Desafio.Final.Diamond.services.ValorService;
 import com.Desafio.Final.Diamond.services.ViagemService;
@@ -20,7 +22,8 @@ public class FinalizarViagemFacadeImpl implements FinalizarViagemFacade {
     private ValorService valorService;
     @Autowired
     private PagamentoService pagamentoService;
-
+    @Autowired
+    private DetalhePagamentoService detalhePagamento;
     @Override
     public boolean finalizarViagem(Integer codigoViagem, PagamentoModel pagamento, Integer codigoValor) {
 
@@ -29,9 +32,20 @@ public class FinalizarViagemFacadeImpl implements FinalizarViagemFacade {
         Double valorFinal = viagemService.calcularPagamento(pagamento);
         pagamento.setValorFinal(BigDecimal.valueOf(valorFinal));
 
+        BigDecimal valorEmpresa = viagemService.calcularTaxaEmpresa(pagamento);
+        DetalhePagamentoModel detalhePagamentoModel = new DetalhePagamentoModel();
+        detalhePagamentoModel.setValorEmpresa(valorEmpresa);
+
+        BigDecimal valorMotorista = viagemService.calcularTaxaMotorista(pagamento);
+        detalhePagamentoModel.setValorMotorista(valorMotorista);
+
+        detalhePagamento.adicionar(detalhePagamentoModel);
+
+        pagamento.setDetalhePagamento(detalhePagamentoModel);
         pagamentoService.savePagamento(pagamento);
 
         ViagemModel viagemModel = viagemService.buscarCodigo(codigoViagem);
+        viagemModel.setPagamento(pagamento);
 
         if (viagemModel != null) {
             viagemModel.setStatusViagem(ViagemEnum.FINALIZADO);

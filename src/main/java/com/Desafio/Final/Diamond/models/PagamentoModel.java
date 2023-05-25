@@ -26,6 +26,10 @@ public class PagamentoModel {
     @JoinColumn(name = "valor_id")
     private ValorModel valor;
 
+    @OneToOne
+    @JoinColumn(name = "")
+    private DetalhePagamentoModel detalhePagamento;
+
     // O pagamento vai ser de acordo com o km
     // pagamento = pagamento base  da viagem + Km a ser rodado * taxa do Km rodado
 }

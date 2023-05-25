@@ -18,8 +18,5 @@ public class DetalhePagamentoModel {
     private BigDecimal valorEmpresa;
     @Column(name = "valor_motorista")
     private BigDecimal valorMotorista;
-    @OneToOne
-    @JoinColumn(name = "pagamento_id")
-    private PagamentoModel pagamento;
 
 }

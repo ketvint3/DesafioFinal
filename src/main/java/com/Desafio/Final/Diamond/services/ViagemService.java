@@ -76,8 +76,15 @@ public class ViagemService {
         return valorFinal;
     }
 
-    public Double calcularEmpresa(DetalhePagamentoModel detalhePagamento) {
+    public BigDecimal calcularTaxaEmpresa(PagamentoModel pagamento) {
 
-        return null;
+        BigDecimal valorEmpresa = BigDecimal.valueOf(pagamento.getValorFinal().doubleValue() * 0.15);
+         return valorEmpresa;
+    }
+
+    public BigDecimal calcularTaxaMotorista(PagamentoModel pagamento) {
+
+        BigDecimal valorMotorista = BigDecimal.valueOf(pagamento.getValorFinal().doubleValue() * 0.85);
+        return valorMotorista;
     }
 }

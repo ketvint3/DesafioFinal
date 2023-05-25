@@ -25,15 +25,15 @@ public class ViagemModel {
     @Column(name = "status_viagem")
     private ViagemEnum statusViagem;
     
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "motorista_id")
     private MotoristaModel motorista;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "passageiro_id")
     private PassageiroModel passageiro;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "pagamento_id")
     private PagamentoModel pagamento;
 }

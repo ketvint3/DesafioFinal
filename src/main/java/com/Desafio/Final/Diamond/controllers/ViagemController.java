@@ -42,8 +42,10 @@ public class ViagemController {
         PassageiroModel passageiro = passageiroService.buscarCodigo(codigoPassageiro);
         viagem.setPassageiro(passageiro);
 
-        PagamentoModel pagamento = pagamentoService.buscarCodigo(codigoPagamento);
-        viagem.setPagamento(pagamento);
+        if (codigoPagamento != null) {
+            PagamentoModel pagamento = pagamentoService.buscarCodigo(codigoPagamento);
+            viagem.setPagamento(pagamento);
+        }
 
         viagem.setStatusViagem(ViagemEnum.PENDENTE);
 
