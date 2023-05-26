@@ -1,15 +1,26 @@
 spring:
   profiles:
-    active: local
+    active: native
   mvc:
     pathmatch:
-      matching-strategy: ant-path-matcher
+      matching-stratedy: ant-path-matcher
   datasource:
     url: jdbc:postgresql://localhost:5432/postgres
-    username: postgres
-    password: 26062021
   jpa:
+    username: postgres
+    password: Ma12rilu10
     hibernate:
-      ddl-auto: update
+      ddl-auto: create-drop
     show-sql: true
 
+  mail:
+    host: smtp.gmail.com
+    port: 587
+    username: desafioedussincdiamond@gmail.com
+    password: yiaveplfxyrrugvd
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true

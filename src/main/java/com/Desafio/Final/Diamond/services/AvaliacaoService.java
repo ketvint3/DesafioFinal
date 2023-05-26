@@ -1,172 +1,70 @@
 package com.Desafio.Final.Diamond.services;
 
-import com.Desafio.Final.Diamond.models.AvaliacaoEnum;
 import com.Desafio.Final.Diamond.models.AvaliacaoModel;
+import com.Desafio.Final.Diamond.models.MotoristaModel;
 import com.Desafio.Final.Diamond.repositories.AvaliacaoRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
+import static com.Desafio.Final.Diamond.models.enu.AvaliacaoEnum.*;
+
 @Service
 public class AvaliacaoService {
-
     @Autowired
     public AvaliacaoRepository avaliacaoRepository;
 
-
     //ADICIONANDO
-    public void adicionar(AvaliacaoModel avaliacao) {
+    public MotoristaModel adicionar(AvaliacaoModel avaliacao) {
         AvaliacaoModel model = new AvaliacaoModel();
-        switch (avaliacao.getAvaliacao()){
-            case PESSIMO:
-                model.setAvaliacao(AvaliacaoEnum.PESSIMO);
+        switch (avaliacao.getAvaliacao()) {
 
+            case PESSIMO:
+                model.setAvaliacao(PESSIMO);
                 break;
 
             case RUIM:
-                model.setAvaliacao(AvaliacaoEnum.RUIM);
+                model.setAvaliacao(RUIM);
                 break;
 
             case BOM:
-                model.setAvaliacao(AvaliacaoEnum.BOM);
+                model.setAvaliacao(BOM);
                 break;
 
-            case RASOAVEL:
-                model.setAvaliacao(AvaliacaoEnum.RASOAVEL);
+            case RAZOAVEL:
+                model.setAvaliacao(RAZOAVEL);
                 break;
 
             case OTIMO:
-                model.setAvaliacao(AvaliacaoEnum.OTIMO);
+                model.setAvaliacao(OTIMO);
                 break;
-
-
 
         }
 
         avaliacaoRepository.save(model);
 
-
-
+        return null;
     }
-    public void listar (AvaliacaoModel avaliacao) {
-        AvaliacaoModel model = new AvaliacaoModel();
-        switch (avaliacao.getAvaliacao()){
-            case PESSIMO:
-                model.setAvaliacao(AvaliacaoEnum.PESSIMO);
+        public List<AvaliacaoModel> listar() {
 
-                break;
-
-            case RUIM:
-                model.setAvaliacao(AvaliacaoEnum.RUIM);
-                break;
-
-            case BOM:
-                model.setAvaliacao(AvaliacaoEnum.BOM);
-                break;
-
-            case RASOAVEL:
-                model.setAvaliacao(AvaliacaoEnum.RASOAVEL);
-                break;
-
-            case OTIMO:
-                model.setAvaliacao(AvaliacaoEnum.OTIMO);
-                break;
-
-
-
+            return avaliacaoRepository.findAll();
         }
 
-        avaliacaoRepository.save(model);
+    public void update(Integer codigo, AvaliacaoModel avaliacao) {
 
-
-
+        if (avaliacaoRepository.existsById(codigo)) {
+            avaliacaoRepository.save(avaliacao);
+        }
     }
-    public void alterar (AvaliacaoModel avaliacao) {
-        AvaliacaoModel model = new AvaliacaoModel();
-        switch (avaliacao.getAvaliacao()){
-            case PESSIMO:
-                model.setAvaliacao(AvaliacaoEnum.PESSIMO);
+    public void remover(Integer codigo) {
 
-                break;
-
-            case RUIM:
-                model.setAvaliacao(AvaliacaoEnum.RUIM);
-                break;
-
-            case BOM:
-                model.setAvaliacao(AvaliacaoEnum.BOM);
-                break;
-
-            case RASOAVEL:
-                model.setAvaliacao(AvaliacaoEnum.RASOAVEL);
-                break;
-
-            case OTIMO:
-                model.setAvaliacao(AvaliacaoEnum.OTIMO);
-                break;
-
-
+        if (avaliacaoRepository.existsById(codigo)) {
+            avaliacaoRepository.deleteById(codigo);
 
         }
-
-        avaliacaoRepository.save(model);
-
-
-
     }
-    public void deletar (AvaliacaoModel avaliacao) {
-        AvaliacaoModel model = new AvaliacaoModel();
-        switch (avaliacao.getAvaliacao()){
-            case PESSIMO:
-                model.setAvaliacao(AvaliacaoEnum.PESSIMO);
-
-                break;
-
-            case RUIM:
-                model.setAvaliacao(AvaliacaoEnum.RUIM);
-                break;
-
-            case BOM:
-                model.setAvaliacao(AvaliacaoEnum.BOM);
-                break;
-
-            case RASOAVEL:
-                model.setAvaliacao(AvaliacaoEnum.RASOAVEL);
-                break;
-
-            case OTIMO:
-                model.setAvaliacao(AvaliacaoEnum.OTIMO);
-                break;
-
-
-
-        }
-
-        avaliacaoRepository.save(model);
-
-
-
-    }
-
-
-
-
-
-    //
-
-
 }
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
